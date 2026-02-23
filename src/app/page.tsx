@@ -179,7 +179,7 @@ function LandingPage({ onLogin, onVerify }: { onLogin: () => void; onVerify: () 
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <HeroSection onVerify={onVerify} />
+          <HeroSection onVerify={onVerify} onLogin={onLogin} />
         </motion.div>
 
         <motion.div
@@ -233,12 +233,18 @@ function Navigation({ onLogin, onVerify }: { onLogin: () => void; onVerify: () =
           </motion.div>
 
           <div className="hidden sm:flex gap-3">
-            <Button variant="ghost" onClick={onLogin} className="text-blue-600 hover:text-blue-700 hover:bg-blue-50">
-              Login
+            <Button variant="ghost" onClick={onLogin} className="text-slate-600 hover:text-blue-600 font-bold uppercase tracking-widest text-xs transition-colors">
+              Portal Access
             </Button>
-            <Button onClick={onVerify} className="bg-blue-600 hover:bg-blue-700 text-white">
-              Verify Document
-            </Button>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                onClick={onLogin}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-black px-6 rounded-xl shadow-lg shadow-blue-500/20 uppercase tracking-widest text-xs"
+              >
+                Live Demo
+                <Sparkles className="ml-2 h-4 w-4" />
+              </Button>
+            </motion.div>
           </div>
 
           <Button
@@ -266,7 +272,7 @@ function Navigation({ onLogin, onVerify }: { onLogin: () => void; onVerify: () =
   )
 }
 
-function HeroSection({ onVerify }: { onVerify: () => void }) {
+function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () => void }) {
   return (
     <section className="relative py-24 px-4 bg-slate-900 text-white overflow-hidden">
       {/* Background patterns */}
@@ -318,21 +324,23 @@ function HeroSection({ onVerify }: { onVerify: () => void }) {
           <Button
             size="lg"
             onClick={onVerify}
-            className="group bg-blue-600 hover:bg-blue-700 text-white px-10 py-7 text-xl rounded-2xl transition-all duration-300 shadow-xl shadow-blue-600/20"
+            className="group bg-slate-800 hover:bg-slate-700 text-white border border-white/10 px-10 py-7 text-xl rounded-2xl transition-all duration-300"
           >
             <FileCheck className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
             Verify a Document
             <ArrowRight className="ml-2 h-5 w-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
           </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={onVerify}
-            className="text-white border-slate-700 hover:bg-slate-800 px-10 py-7 text-xl rounded-2xl transition-all duration-300"
-          >
-            <Search className="mr-3 h-6 w-6" />
-            Try Demo
-          </Button>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button
+              size="lg"
+              onClick={onLogin}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-7 text-xl rounded-2xl transition-all duration-300 shadow-2xl shadow-blue-500/40 border-0 font-black flex items-center gap-3"
+            >
+              <Zap className="h-6 w-6 text-blue-200" />
+              Launch Demo Login
+              <Sparkles className="h-5 w-5" />
+            </Button>
+          </motion.div>
         </motion.div>
       </div>
 
@@ -759,7 +767,10 @@ function LoginForm({ onBack, onLogin, loading, error }: {
               </motion.div>
               <CardTitle className="text-4xl font-bold text-white mb-3">Sign In to AVA</CardTitle>
               <CardDescription className="text-slate-400 text-lg">
-                Access your secure document vault
+                Access your secure document vault. <br />
+                <span className="text-blue-400 font-bold text-sm uppercase tracking-widest bg-blue-500/10 px-3 py-1 rounded-full mt-2 inline-block">
+                  Any email works for demo access
+                </span>
               </CardDescription>
             </CardHeader>
             <CardContent className="px-10 pb-12">
@@ -1053,8 +1064,8 @@ function VerificationResultCard({ result }: { result: VerificationResult }) {
       className="mt-12"
     >
       <Card className={`overflow-hidden border-2 rounded-[32px] shadow-2xl ${isVerified ? 'border-emerald-500/20 bg-emerald-500/5' :
-          isSuspicious ? 'border-amber-500/20 bg-amber-500/5' :
-            'border-rose-500/20 bg-rose-500/5'
+        isSuspicious ? 'border-amber-500/20 bg-amber-500/5' :
+          'border-rose-500/20 bg-rose-500/5'
         } backdrop-blur-3xl`}>
         <div className="p-10">
           <div className="flex flex-col md:flex-row items-center gap-8 mb-10">
@@ -1063,8 +1074,8 @@ function VerificationResultCard({ result }: { result: VerificationResult }) {
               animate={{ rotate: 0, scale: 1 }}
               transition={{ type: 'spring', delay: 0.2 }}
               className={`h-24 w-24 rounded-3xl flex items-center justify-center ${isVerified ? 'bg-emerald-500' :
-                  isSuspicious ? 'bg-amber-500' :
-                    'bg-rose-500'
+                isSuspicious ? 'bg-amber-500' :
+                  'bg-rose-500'
                 } shadow-lg shadow-black/20`}
             >
               {isVerified ? <CheckCircle2 className="h-12 w-12 text-white" /> :
@@ -1073,8 +1084,8 @@ function VerificationResultCard({ result }: { result: VerificationResult }) {
             </motion.div>
             <div className="text-center md:text-left">
               <h2 className={`text-4xl font-black mb-2 ${isVerified ? 'text-emerald-400' :
-                  isSuspicious ? 'text-amber-400' :
-                    'text-rose-400'
+                isSuspicious ? 'text-amber-400' :
+                  'text-rose-400'
                 }`}>
                 {isVerified ? 'Authenticity Confirmed' :
                   isSuspicious ? 'Potential Tampering' :
