@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getSession } from '@/lib/auth'
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/lib/auth-options"
 import { generateSHA256 } from '@/lib/verification'
 import {
   registerCertificateOnBlockchain,
@@ -9,9 +10,9 @@ import {
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getSession()
+    const session = await getServerSession(authOptions)
 
-    if (!session || session.userRole !== 'ADMIN') {
+    if (!session || (session.user as any).role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Unauthorized. Admin access required.' },
         { status: 403 }
@@ -19,7 +20,7 @@ export async function GET(request: NextRequest) {
     }
 
     const blockchainStatus = await getBlockchainStatus()
-    
+
     const certificates = await db.certificate.findMany({
       include: {
         institution: true,
@@ -36,7 +37,7 @@ export async function GET(request: NextRequest) {
       },
     })
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       certificates,
       blockchainType: blockchainStatus.type,
       blockchainConnected: blockchainStatus.connected,
@@ -55,9 +56,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getSession()
+    const session = await getServerSession(authOptions)
 
-    if (!session || session.userRole !== 'ADMIN') {
+    if (!session || (session.user as any).role !== 'ADMIN') {
       return NextResponse.json(
         { error: 'Unauthorized. Admin access required.' },
         { status: 403 }
@@ -85,7 +86,6 @@ export async function POST(request: NextRequest) {
 
     // Check blockchain status
     const blockchainStatus = await getBlockchainStatus()
-    console.log('🔗 Blockchain Status:', blockchainStatus)
 
     // Generate file hash
     const fileHash = fileContent
@@ -129,9 +129,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Register on REAL blockchain (Ethereum, Fabric, or Simulated)
-    console.log(`📝 Registering certificate ${certCode} on ${blockchainStatus.type} blockchain...`)
     const blockchainResult = await registerCertificateOnBlockchain(certData)
-    
+
     if (!blockchainResult.success) {
       return NextResponse.json(
         {
@@ -143,10 +142,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log('✅ Blockchain Registration Successful!')
-    console.log(`   TX Hash: ${blockchainResult.transactionHash}`)
-    console.log(`   Certificate ID: ${blockchainResult.certificateId}`)
-
     // Create certificate in database with REAL blockchain transaction
     const certificate = await db.certificate.create({
       data: {
@@ -154,11 +149,12 @@ export async function POST(request: NextRequest) {
         degree,
         year: parseInt(year),
         certCode: certCode.toUpperCase(),
+        title: `${studentName} - ${degree}`, // Added missing title field
         fileHash,
         ipfsLink: blockchainResult.ipfsHash || `Qm${Math.random().toString(36).substring(2, 46)}`,
-        blockchainTxHash: blockchainResult.transactionHash,
+        blockchainTxHash: blockchainResult.transactionHash || null,
         institutionId: institution.id,
-        uploadedBy: session.userId,
+        uploadedBy: parseInt((session.user as any).id),
       },
       include: {
         institution: true,
@@ -171,11 +167,6 @@ export async function POST(request: NextRequest) {
         },
       },
     })
-
-    // Disconnect from Fabric if needed
-    if (blockchainStatus.type === 'FABRIC') {
-      await disconnectFabric()
-    }
 
     return NextResponse.json({
       success: true,

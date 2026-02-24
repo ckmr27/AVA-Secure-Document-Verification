@@ -11,13 +11,14 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Progress } from '@/components/ui/progress'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
+import { signIn, signOut, useSession } from 'next-auth/react'
 import {
   Shield, FileCheck, Link, Lock, Zap, Users, CheckCircle2,
   ArrowRight, Upload, Search, AlertTriangle, XCircle, Download,
-  Plus, LogOut, Menu, X, Sparkles
+  Plus, LogOut, Menu, X, Sparkles, Github, Globe, Facebook
 } from 'lucide-react'
 
-type View = 'landing' | 'login' | 'verify' | 'admin-dashboard' | 'user-dashboard'
+type View = 'landing' | 'login' | 'signup' | 'verify' | 'admin-dashboard' | 'user-dashboard'
 
 interface User {
   id: string
@@ -64,54 +65,46 @@ interface VerificationResult {
 }
 
 export default function Home() {
+  const { data: session, status } = useSession()
   const [currentView, setCurrentView] = useState<View>('landing')
-  const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
+  // Sync view with session status
   useEffect(() => {
-    checkAuth()
-  }, [])
-
-  const checkAuth = async () => {
-    try {
-      const response = await fetch('/api/auth/me')
-      if (response.ok) {
-        const data = await response.json()
-        setUser(data.user)
+    if (status === 'authenticated' && session?.user) {
+      if (currentView === 'landing' || currentView === 'login' || currentView === 'signup') {
+        const role = (session.user as any).role
+        setCurrentView(role === 'ADMIN' ? 'admin-dashboard' : 'user-dashboard')
       }
-    } catch (error) {
-      console.error('Auth check failed:', error)
+    } else if (status === 'unauthenticated') {
+      if (currentView === 'admin-dashboard' || currentView === 'user-dashboard') {
+        setCurrentView('landing')
+      }
     }
-  }
+  }, [status, session, currentView])
 
   const handleLogin = async (email: string, password: string) => {
     setLoading(true)
     setError('')
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Login failed')
+      if (result?.error) {
+        throw new Error(result.error === 'CredentialsSignin' ? 'Invalid email or password' : result.error)
       }
 
-      setUser(data.user)
-
-      if (data.user.role === 'ADMIN') {
-        setCurrentView('admin-dashboard')
-      } else {
-        setCurrentView('user-dashboard')
-      }
+      toast.success('Successfully signed in!')
+      // View will be updated by useEffect
     } catch (error: any) {
       setError(error.message)
+      toast.error(error.message)
     } finally {
       setLoading(false)
     }
@@ -119,13 +112,21 @@ export default function Home() {
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST' })
-      setUser(null)
+      await signOut({ redirect: false })
       setCurrentView('landing')
+      toast.success('Signed out successfully')
     } catch (error) {
       console.error('Logout failed:', error)
+      toast.error('Logout failed')
     }
   }
+
+  const user = session?.user ? {
+    id: (session.user as any).id,
+    name: session.user.name || '',
+    email: session.user.email || '',
+    role: (session.user as any).role || 'USER'
+  } as User : null
 
   return (
     <AnimatePresence mode="wait">
@@ -138,7 +139,20 @@ export default function Home() {
         className="min-h-screen"
       >
         {currentView === 'login' && (
-          <LoginForm onBack={() => setCurrentView('landing')} onLogin={handleLogin} loading={loading} error={error} />
+          <LoginForm
+            onBack={() => setCurrentView('landing')}
+            onLogin={handleLogin}
+            loading={loading}
+            error={error}
+            onToggleSignup={() => setCurrentView('signup')}
+          />
+        )}
+
+        {currentView === 'signup' && (
+          <SignupForm
+            onBack={() => setCurrentView('landing')}
+            onToggleLogin={() => setCurrentView('login')}
+          />
         )}
 
         {currentView === 'verify' && (
@@ -169,7 +183,8 @@ export default function Home() {
 
 function LandingPage({ onLogin, onVerify }: { onLogin: () => void; onVerify: () => void }) {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-slate-50 relative overflow-hidden">
+      <div className="absolute inset-0 z-0 bg-[url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-5 pointer-events-none"></div>
       <Navigation onLogin={onLogin} onVerify={onVerify} />
 
       <main className="flex-1 overflow-x-hidden">
@@ -692,11 +707,12 @@ function Footer() {
   )
 }
 
-function LoginForm({ onBack, onLogin, loading, error }: {
+function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
   onBack: () => void
   onLogin: (email: string, password: string) => void
   loading: boolean
   error: string
+  onToggleSignup: () => void
 }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -706,25 +722,22 @@ function LoginForm({ onBack, onLogin, loading, error }: {
     onLogin(email, password)
   }
 
+  const handleSocialLogin = (provider: string) => {
+    signIn(provider, { callbackUrl: '/' })
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-slate-900 relative overflow-hidden">
-      {/* Dynamic background */}
+      {/* Dynamic background with opaque images */}
       <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
         <motion.div
           animate={{
             rotate: [0, 360],
             scale: [1, 1.2, 1],
           }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-r from-blue-600/20 to-indigo-600/20 rounded-full blur-[120px]"
-        />
-        <motion.div
-          animate={{
-            rotate: [360, 0],
-            scale: [1, 1.5, 1],
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/2 -right-1/2 w-full h-full bg-gradient-to-l from-indigo-600/20 to-blue-600/20 rounded-full blur-[120px]"
+          className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-r from-blue-600/10 to-indigo-600/10 rounded-full blur-[120px]"
         />
       </div>
 
@@ -754,7 +767,7 @@ function LoginForm({ onBack, onLogin, loading, error }: {
           transition={{ duration: 0.5 }}
           className="w-full max-w-lg"
         >
-          <Card className="bg-slate-800/50 backdrop-blur-3xl border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden rounded-[32px]">
+          <Card className="bg-slate-800/80 backdrop-blur-3xl border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden rounded-[32px]">
             <div className="h-2 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-500"></div>
             <CardHeader className="text-center pt-10 pb-6 px-10">
               <motion.div
@@ -767,13 +780,49 @@ function LoginForm({ onBack, onLogin, loading, error }: {
               </motion.div>
               <CardTitle className="text-4xl font-bold text-white mb-3">Sign In to AVA</CardTitle>
               <CardDescription className="text-slate-400 text-lg">
-                Access your secure document vault. <br />
-                <span className="text-blue-400 font-bold text-sm uppercase tracking-widest bg-blue-500/10 px-3 py-1 rounded-full mt-2 inline-block">
-                  Any email works for demo access
-                </span>
+                Access your secure document vault.
               </CardDescription>
             </CardHeader>
             <CardContent className="px-10 pb-12">
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="bg-white/5 border-white/10 text-white h-12 rounded-xl hover:bg-white/10"
+                  onClick={() => handleSocialLogin('google')}
+                >
+                  <Globe className="mr-2 h-5 w-5 text-blue-400" />
+                  Google
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="bg-white/5 border-white/10 text-white h-12 rounded-xl hover:bg-white/10"
+                  onClick={() => handleSocialLogin('github')}
+                >
+                  <Github className="mr-2 h-5 w-5" />
+                  GitHub
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="bg-white/5 border-white/10 text-white h-12 rounded-xl hover:bg-white/10 col-span-2"
+                  onClick={() => handleSocialLogin('facebook')}
+                >
+                  <Facebook className="mr-2 h-5 w-5 text-blue-600" />
+                  Continue with Facebook
+                </Button>
+              </div>
+
+              <div className="relative mb-8">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-white/10"></span>
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-slate-800 px-2 text-slate-500 font-bold tracking-widest">Or continue with email</span>
+                </div>
+              </div>
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 {error && (
                   <motion.div
@@ -791,7 +840,211 @@ function LoginForm({ onBack, onLogin, loading, error }: {
                   <label className="text-sm font-semibold text-slate-300 uppercase tracking-widest ml-1">Email Address</label>
                   <Input
                     type="email"
-                    placeholder="admin@university.edu"
+                    placeholder="name@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-slate-900/50 border-white/10 border-2 text-white h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-sm font-semibold text-slate-300 uppercase tracking-widest ml-1">Secure Password</label>
+                  <Input
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="bg-slate-900/50 border-white/10 border-2 text-white h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
+                    required
+                  />
+                </div>
+                <div className="flex space-x-4 mb-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="bg-white/5 border-white/10 text-white h-10 rounded-xl"
+                    onClick={() => {
+                      setEmail('admin@university.edu');
+                      setPassword('admin123');
+                    }}
+                  >
+                    Fill Admin
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="bg-white/5 border-white/10 text-white h-10 rounded-xl"
+                    onClick={() => {
+                      setEmail('user@company.com');
+                      setPassword('user123');
+                    }}
+                  >
+                    Fill User
+                  </Button>
+                </div>
+
+                <Button
+                  type="submit"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white h-16 rounded-2xl text-xl font-bold shadow-xl shadow-blue-900/20 transition-all active:scale-95 disabled:opacity-50"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <span className="flex items-center gap-3">
+                      <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Authenticating...
+                    </span>
+                  ) : 'Sign In Now'}
+                </Button>
+
+                <div className="text-center pt-4">
+                  <p className="text-slate-400">
+                    Don't have an account?{' '}
+                    <button
+                      type="button"
+                      onClick={onToggleSignup}
+                      className="text-blue-400 font-bold hover:underline"
+                    >
+                      Create one here
+                    </button>
+                  </p>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+
+      <Footer />
+    </div>
+  )
+}
+
+function SignupForm({ onBack, onToggleLogin }: {
+  onBack: () => void
+  onToggleLogin: () => void
+}) {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Signup failed')
+      }
+
+      toast.success('Account created successfully! Please sign in.')
+      onToggleLogin()
+    } catch (error: any) {
+      setError(error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col bg-slate-900 relative overflow-hidden">
+      {/* Dynamic background with opaque images */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1523050335102-c89b27819f3a?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
+        <motion.div
+          animate={{
+            rotate: [0, 360],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-r from-blue-600/10 to-indigo-600/10 rounded-full blur-[120px]"
+        />
+      </div>
+
+      <nav className="border-b border-white/10 bg-slate-900/50 backdrop-blur-xl relative z-20">
+        <div className="container mx-auto px-6 py-5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Shield className="h-10 w-10 text-blue-500" />
+            <span className="text-3xl font-black bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+              AVA
+            </span>
+          </div>
+          <Button
+            variant="ghost"
+            onClick={onBack}
+            className="text-slate-300 hover:text-white hover:bg-white/10 rounded-xl px-5"
+          >
+            <ArrowRight className="mr-3 h-5 w-5 rotate-180" />
+            Back to Home
+          </Button>
+        </div>
+      </nav>
+
+      <div className="flex-1 flex items-center justify-center px-6 py-16 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-lg"
+        >
+          <Card className="bg-slate-800/80 backdrop-blur-3xl border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden rounded-[32px]">
+            <div className="h-2 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-500"></div>
+            <CardHeader className="text-center pt-10 pb-6 px-10">
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="mx-auto bg-blue-500/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+              >
+                <Plus className="h-8 w-8 text-blue-400" />
+              </motion.div>
+              <CardTitle className="text-4xl font-bold text-white mb-3">Create Account</CardTitle>
+              <CardDescription className="text-slate-400 text-lg">
+                Join the future of academic verification.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="px-10 pb-12">
+              <form onSubmit={handleSignup} className="space-y-6">
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                  >
+                    <Alert variant="destructive" className="bg-red-500/10 border-red-500/50 text-red-400 rounded-2xl">
+                      <AlertTriangle className="h-5 w-5" />
+                      <AlertDescription className="text-base ml-2">{error}</AlertDescription>
+                    </Alert>
+                  </motion.div>
+                )}
+
+                <div className="space-y-3">
+                  <label className="text-sm font-semibold text-slate-300 uppercase tracking-widest ml-1">Full Name</label>
+                  <Input
+                    type="text"
+                    placeholder="John Doe"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="bg-slate-900/50 border-white/10 border-2 text-white h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-sm font-semibold text-slate-300 uppercase tracking-widest ml-1">Email Address</label>
+                  <Input
+                    type="email"
+                    placeholder="name@university.edu"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="bg-slate-900/50 border-white/10 border-2 text-white h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
@@ -819,31 +1072,22 @@ function LoginForm({ onBack, onLogin, loading, error }: {
                   {loading ? (
                     <span className="flex items-center gap-3">
                       <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      Authenticating...
+                      Creating Account...
                     </span>
-                  ) : 'Sign In Now'}
+                  ) : 'Create My Account'}
                 </Button>
 
-                <div className="pt-6 border-t border-white/5 space-y-4">
-                  <p className="text-center text-slate-500 text-sm font-medium uppercase tracking-tighter">Quick Access Demo Accounts</p>
-                  <div className="grid grid-cols-1 gap-3">
+                <div className="text-center pt-4">
+                  <p className="text-slate-400">
+                    Already have an account?{' '}
                     <button
                       type="button"
-                      onClick={() => { setEmail('admin@university.edu'); setPassword('admin123') }}
-                      className="bg-white/5 hover:bg-white/10 text-slate-300 p-4 rounded-2xl text-sm font-mono flex items-center justify-between transition-colors border border-white/5 group"
+                      onClick={onToggleLogin}
+                      className="text-blue-400 font-bold hover:underline"
                     >
-                      <span>Admin Access</span>
-                      <span className="text-blue-400 group-hover:underline">Fill Credentials</span>
+                      Sign in here
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => { setEmail('user@company.com'); setPassword('user123') }}
-                      className="bg-white/5 hover:bg-white/10 text-slate-300 p-4 rounded-2xl text-sm font-mono flex items-center justify-between transition-colors border border-white/5 group"
-                    >
-                      <span>Standard User</span>
-                      <span className="text-blue-400 group-hover:underline">Fill Credentials</span>
-                    </button>
-                  </div>
+                  </p>
                 </div>
               </form>
             </CardContent>
@@ -931,8 +1175,9 @@ function VerifyPage({ onBack }: { onBack: () => void }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 relative overflow-hidden">
-      {/* Background patterns */}
+      {/* Background patterns and images */}
       <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-screen"></div>
         <div className="absolute top-0 center-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b_0%,transparent_50%)]"></div>
         <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:30px_30px]"></div>
       </div>
@@ -1198,7 +1443,8 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-slate-900 relative overflow-hidden">
+      <div className="absolute inset-0 z-0 bg-[url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
       {/* Dynamic background element */}
       <div className="absolute top-0 left-0 w-full h-64 bg-slate-900 z-0">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_50%_120%,#3b82f6,transparent_70%)]"></div>
@@ -1310,6 +1556,7 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
 function UserDashboard({ user, onLogout, onVerify }: { user: User; onLogout: () => void; onVerify: () => void }) {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 relative overflow-hidden">
+      <div className="absolute inset-0 z-0 bg-[url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-5 pointer-events-none"></div>
       {/* Decorative background elements */}
       <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-600/[0.02] -skew-x-12 transform origin-top-right"></div>
 
