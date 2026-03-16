@@ -154,12 +154,11 @@ export default function MarqueeBackground() {
             {/* Row 5 — leftward, faster */}
             <MarqueeRow icons={buildRow(2)} direction="left" duration={40} iconSize={36} gap={64} />
             {/* Row 6 — rightward, slow */}
+            <MarqueeRow icons={buildRow(6)} direction="right" duration={70} iconSize={42} gap={52} />
             {/* Row 7 — leftward, medium speed */}
             <MarqueeRow icons={buildRow(4)} direction="left" duration={55} iconSize={38} gap={60} />
             {/* Row 8 — rightward, medium speed */}
             <MarqueeRow icons={buildRow(7)} direction="right" duration={55} iconSize={38} gap={60} />
-            {/* Row 6 — rightward, slow */}
-            <MarqueeRow icons={buildRow(6)} direction="right" duration={70} iconSize={42} gap={52} />
         </div>
     );
 }

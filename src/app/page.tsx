@@ -229,7 +229,12 @@ function Navigation({ onLogin, onVerify }: { onLogin: () => void; onVerify: () =
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
-    <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+    <motion.nav
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      className="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-sm"
+    >
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <motion.div
@@ -265,7 +270,7 @@ function Navigation({ onLogin, onVerify }: { onLogin: () => void; onVerify: () =
           <Button
             variant="ghost"
             size="icon"
-            className="sm:hidden"
+            className="sm:hidden text-slate-800"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -283,17 +288,17 @@ function Navigation({ onLogin, onVerify }: { onLogin: () => void; onVerify: () =
           </div>
         )}
       </div>
-    </nav>
+    </motion.nav>
   )
 }
 
 function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () => void }) {
   return (
-    <section className="relative py-24 px-4 bg-slate-900 text-white overflow-hidden">
+    <section className="relative py-24 px-4 bg-slate-50 text-slate-900 overflow-hidden">
       {/* Background patterns */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px]"></div>
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600/20 via-transparent to-indigo-600/20"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-600/10 via-transparent to-indigo-600/10"></div>
       </div>
 
       <div className="container mx-auto text-center max-w-4xl relative z-10">
@@ -302,10 +307,12 @@ function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () 
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <Badge className="mb-6 bg-blue-500/10 text-blue-400 border border-blue-500/20 px-4 py-1 text-sm">
-            <Sparkles className="h-4 w-4 mr-2" />
-            Enterprise-Grade Security
-          </Badge>
+          <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }} className="inline-block">
+            <Badge className="mb-6 bg-blue-500/10 text-blue-400 border border-blue-500/20 px-4 py-1 text-sm shadow-xl shadow-blue-500/10">
+              <Sparkles className="h-4 w-4 mr-2" />
+              Enterprise-Grade Security
+            </Badge>
+          </motion.div>
         </motion.div>
 
         <motion.h1
@@ -324,7 +331,7 @@ function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-xl md:text-2xl text-slate-400 mb-12 max-w-3xl mx-auto leading-relaxed"
+          className="text-xl md:text-2xl text-slate-600 mb-12 max-w-3xl mx-auto leading-relaxed"
         >
           Combat academic document fraud with advanced OCR, cryptographic hashing,
           and blockchain-anchored verification. Trust in every certificate.
@@ -339,7 +346,7 @@ function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () 
           <Button
             size="lg"
             onClick={onVerify}
-            className="group bg-slate-800 hover:bg-slate-700 text-white border border-white/10 px-10 py-7 text-xl rounded-2xl transition-all duration-300"
+            className="group bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 px-10 py-7 text-xl rounded-2xl transition-all duration-300 shadow-sm"
           >
             <FileCheck className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
             Verify a Document
@@ -380,7 +387,7 @@ function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () 
 
 function ProblemSection() {
   return (
-    <section className="py-16 px-4 bg-white">
+    <section className="py-16 px-4 bg-white border-t border-slate-100">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4 text-slate-900">
@@ -391,12 +398,12 @@ function ProblemSection() {
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
-          <Card className="border-2 hover:border-blue-300 transition-all duration-300 hover:shadow-lg">
+          <Card className="bg-white border-slate-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100">
             <CardHeader>
-              <div className="h-12 w-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+              <div className="h-12 w-12 bg-red-50 rounded-full flex items-center justify-center mb-4">
                 <FileCheck className="h-6 w-6 text-red-600" />
               </div>
-              <CardTitle className="text-xl">Document Fraud</CardTitle>
+              <CardTitle className="text-xl text-slate-900">Document Fraud</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-slate-600">
@@ -405,12 +412,12 @@ function ProblemSection() {
             </CardContent>
           </Card>
 
-          <Card className="border-2 hover:border-blue-300 transition-all duration-300 hover:shadow-lg">
+          <Card className="bg-white border-slate-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100">
             <CardHeader>
-              <div className="h-12 w-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+              <div className="h-12 w-12 bg-orange-50 rounded-full flex items-center justify-center mb-4">
                 <Users className="h-6 w-6 text-orange-600" />
               </div>
-              <CardTitle className="text-xl">Manual Delays</CardTitle>
+              <CardTitle className="text-xl text-slate-900">Manual Delays</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-slate-600">
@@ -419,12 +426,12 @@ function ProblemSection() {
             </CardContent>
           </Card>
 
-          <Card className="border-2 hover:border-blue-300 transition-all duration-300 hover:shadow-lg">
+          <Card className="bg-white border-slate-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100">
             <CardHeader>
-              <div className="h-12 w-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
+              <div className="h-12 w-12 bg-yellow-50 rounded-full flex items-center justify-center mb-4">
                 <Lock className="h-6 w-6 text-yellow-600" />
               </div>
-              <CardTitle className="text-xl">Lack of Trust</CardTitle>
+              <CardTitle className="text-xl text-slate-900">Lack of Trust</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-slate-600">
@@ -447,10 +454,10 @@ function BenefitsSection() {
   ]
 
   return (
-    <section className="py-24 px-4 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-white relative overflow-hidden">
+    <section className="py-24 px-4 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-white relative overflow-hidden border-y border-blue-600">
       {/* Decorative blobs */}
-      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl"></div>
+      <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl"></div>
 
       <div className="container mx-auto max-w-6xl relative z-10">
         <div className="text-center mb-16">
@@ -476,13 +483,13 @@ function BenefitsSection() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1, duration: 0.5 }}
               whileHover={{ scale: 1.05, translateY: -5 }}
-              className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/10 hover:border-white/20 transition-all duration-300 group shadow-xl"
+              className="bg-blue-900 rounded-2xl p-8 border border-blue-700 hover:border-blue-600 transition-all duration-300 group shadow-xl"
             >
-              <div className="bg-blue-500/20 rounded-xl p-3 w-fit mb-6 group-hover:bg-blue-500/30 transition-colors">
+              <div className="bg-blue-800 rounded-xl p-3 w-fit mb-6 group-hover:bg-blue-700 transition-colors">
                 <benefit.icon className="h-8 w-8 text-blue-300" />
               </div>
-              <h3 className="text-2xl font-semibold mb-3">{benefit.title}</h3>
-              <p className="text-blue-100/80 leading-relaxed text-lg">{benefit.desc}</p>
+              <h3 className="text-2xl font-semibold mb-3 text-white">{benefit.title}</h3>
+              <p className="text-blue-200 leading-relaxed text-lg">{benefit.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -517,7 +524,7 @@ function HowItWorksSection() {
           </motion.div>
         </div>
         <div className="grid md:grid-cols-3 gap-12 relative">
-          <div className="hidden md:block absolute top-[60px] left-[15%] right-[15%] h-1 border-t-4 border-dashed border-blue-100"></div>
+          <div className="hidden md:block absolute top-[60px] left-[15%] right-[15%] h-1 border-t-4 border-dashed border-blue-200"></div>
           {steps.map((step, index) => (
             <motion.div
               key={index}
@@ -529,7 +536,7 @@ function HowItWorksSection() {
             >
               <motion.div
                 whileHover={{ scale: 1.1, rotate: 5 }}
-                className={`h-28 w-28 ${step.num === 3 ? 'bg-blue-600 text-white shadow-blue-600/30' : 'bg-blue-100 text-blue-600'} rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl transition-colors duration-500`}
+                className={`h-28 w-28 ${step.num === 3 ? 'bg-blue-600 text-white shadow-blue-600/30' : 'bg-blue-50 text-blue-600 border border-blue-100'} rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl transition-colors duration-500`}
               >
                 <span className="text-4xl font-black">{step.num}</span>
               </motion.div>
@@ -568,7 +575,7 @@ function TechnologySection() {
   ]
 
   return (
-    <section className="py-24 px-4 bg-slate-50">
+    <section className="py-24 px-4 bg-slate-50 border-t border-slate-200">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16">
           <motion.div
@@ -593,11 +600,11 @@ function TechnologySection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <Card className="border-2 border-slate-100 hover:border-blue-400 transition-all duration-300 hover:shadow-2xl h-full group">
+              <Card className="bg-white border-slate-200 hover:border-blue-300 transition-all duration-300 hover:shadow-2xl h-full group hover:shadow-blue-100">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-2xl">
-                    <div className="p-2 bg-blue-50 rounded-lg group-hover:bg-blue-100 transition-colors">
-                      <tech.icon className="h-6 w-6 text-blue-600" />
+                  <CardTitle className="flex items-center gap-3 text-2xl text-slate-900">
+                    <div className="p-2 bg-blue-50 rounded-lg group-hover:bg-blue-600 transition-colors">
+                      <tech.icon className="h-6 w-6 text-blue-600 group-hover:text-white" />
                     </div>
                     {tech.title}
                   </CardTitle>
@@ -613,7 +620,7 @@ function TechnologySection() {
                       className="flex items-start gap-3"
                     >
                       <CheckCircle2 className="h-6 w-6 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-slate-700 text-lg leading-snug">{item}</span>
+                      <span className="text-slate-600 text-lg leading-snug">{item}</span>
                     </motion.div>
                   ))}
                 </CardContent>
@@ -628,10 +635,10 @@ function TechnologySection() {
 
 function CTASection({ onVerify }: { onVerify: () => void }) {
   return (
-    <section className="py-24 px-4 bg-gradient-to-r from-blue-700 to-indigo-800 text-white relative overflow-hidden">
-      <div className="absolute inset-0 opacity-10">
+    <section className="py-24 px-4 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white relative overflow-hidden border-t border-blue-500/30">
+      <div className="absolute inset-0 opacity-20">
         <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-300 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-200 rounded-full blur-3xl"></div>
       </div>
 
       <div className="container mx-auto text-center max-w-3xl relative z-10">
@@ -640,7 +647,7 @@ function CTASection({ onVerify }: { onVerify: () => void }) {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-8">
+          <h2 className="text-4xl md:text-5xl font-bold mb-8 text-white">
             Ready to Verify with Confidence?
           </h2>
           <p className="text-xl text-blue-100 mb-10 opacity-90 leading-relaxed">
@@ -650,7 +657,7 @@ function CTASection({ onVerify }: { onVerify: () => void }) {
           <Button
             size="lg"
             onClick={onVerify}
-            className="group bg-white text-blue-700 hover:bg-blue-50 px-12 py-8 text-2xl rounded-2xl shadow-2xl transition-all duration-300"
+            className="group bg-white text-blue-700 hover:bg-slate-50 px-12 py-8 text-2xl rounded-2xl shadow-xl shadow-blue-900/20 transition-all duration-300"
           >
             Verify Your First Document
             <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform" />
@@ -663,43 +670,43 @@ function CTASection({ onVerify }: { onVerify: () => void }) {
 
 function Footer() {
   return (
-    <footer className="bg-slate-900 text-slate-300 py-12 px-4">
+    <footer className="bg-slate-50 text-slate-500 py-12 px-4 border-t border-slate-200 relative z-10">
       <div className="container mx-auto max-w-6xl">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <Shield className="h-6 w-6 text-blue-400" />
-              <span className="text-xl font-bold text-white">AVA</span>
+              <Shield className="h-6 w-6 text-blue-600" />
+              <span className="text-xl font-bold text-slate-900">AVA</span>
             </div>
             <p className="text-sm">
               Enterprise-grade academic credential verification platform
             </p>
           </div>
           <div>
-            <h4 className="font-semibold text-white mb-4">Platform</h4>
+            <h4 className="font-semibold text-slate-900 mb-4">Platform</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Verification</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Dashboard</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">API Access</a></li>
+              <li><a href="#" className="hover:text-blue-600 transition-colors">Verification</a></li>
+              <li><a href="#" className="hover:text-blue-600 transition-colors">Dashboard</a></li>
+              <li><a href="#" className="hover:text-blue-600 transition-colors">API Access</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-white mb-4">Security</h4>
+            <h4 className="font-semibold text-slate-900 mb-4">Security</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Technology</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Compliance</a></li>
-              <li><a href="#" className="hover:text-blue-400 transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-blue-600 transition-colors">Technology</a></li>
+              <li><a href="#" className="hover:text-blue-600 transition-colors">Compliance</a></li>
+              <li><a href="#" className="hover:text-blue-600 transition-colors">Privacy Policy</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-white mb-4">Contact</h4>
+            <h4 className="font-semibold text-slate-900 mb-4">Contact</h4>
             <ul className="space-y-2 text-sm">
               <li>support@ava-platform.com</li>
               <li>1-800-AVA-VERIFY</li>
             </ul>
           </div>
         </div>
-        <div className="border-t border-slate-800 pt-8 text-center text-sm">
+        <div className="border-t border-slate-200 pt-8 text-center text-sm">
           <p>&copy; 2025 Authenticity Validator for Academia. All rights reserved.</p>
         </div>
       </div>
@@ -727,21 +734,21 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-900 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-slate-50 relative overflow-hidden">
       {/* Dynamic background with opaque images */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-5 pointer-events-none"></div>
         <motion.div
           animate={{
             rotate: [0, 360],
             scale: [1, 1.2, 1],
           }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-r from-blue-600/10 to-indigo-600/10 rounded-full blur-[120px]"
+          className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-r from-blue-400/20 to-indigo-400/20 rounded-full blur-[120px]"
         />
       </div>
 
-      <nav className="border-b border-white/10 bg-slate-900/50 backdrop-blur-xl relative z-20">
+      <nav className="border-b border-slate-200 bg-white relative z-20">
         <div className="container mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Shield className="h-10 w-10 text-blue-500" />
@@ -752,7 +759,7 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
           <Button
             variant="ghost"
             onClick={onBack}
-            className="text-slate-300 hover:text-white hover:bg-white/10 rounded-xl px-5"
+            className="text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl px-5"
           >
             <ArrowRight className="mr-3 h-5 w-5 rotate-180" />
             Back to Home
@@ -767,19 +774,19 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
           transition={{ duration: 0.5 }}
           className="w-full max-w-lg"
         >
-          <Card className="bg-slate-800/80 backdrop-blur-3xl border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden rounded-[32px]">
+          <Card className="bg-white border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] overflow-hidden rounded-[32px]">
             <div className="h-2 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-500"></div>
             <CardHeader className="text-center pt-10 pb-6 px-10">
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="mx-auto bg-blue-500/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+                className="mx-auto bg-blue-50 w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
               >
-                <Lock className="h-8 w-8 text-blue-400" />
+                <Lock className="h-8 w-8 text-blue-600" />
               </motion.div>
-              <CardTitle className="text-4xl font-bold text-white mb-3">Sign In to AVA</CardTitle>
-              <CardDescription className="text-slate-400 text-lg">
+              <CardTitle className="text-4xl font-bold text-slate-900 mb-3">Sign In to AVA</CardTitle>
+              <CardDescription className="text-slate-600 text-lg">
                 Access your secure document vault.
               </CardDescription>
             </CardHeader>
@@ -788,7 +795,7 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
                 <Button
                   type="button"
                   variant="outline"
-                  className="bg-white/5 border-white/10 text-white h-12 rounded-xl hover:bg-white/10"
+                  className="bg-white border-slate-200 text-slate-700 h-12 rounded-xl hover:bg-slate-50"
                   onClick={() => handleSocialLogin('google')}
                 >
                   <Globe className="mr-2 h-5 w-5 text-blue-400" />
@@ -797,7 +804,7 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
                 <Button
                   type="button"
                   variant="outline"
-                  className="bg-white/5 border-white/10 text-white h-12 rounded-xl hover:bg-white/10"
+                  className="bg-white border-slate-200 text-slate-700 h-12 rounded-xl hover:bg-slate-50"
                   onClick={() => handleSocialLogin('github')}
                 >
                   <Github className="mr-2 h-5 w-5" />
@@ -806,7 +813,7 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
                 <Button
                   type="button"
                   variant="outline"
-                  className="bg-white/5 border-white/10 text-white h-12 rounded-xl hover:bg-white/10 col-span-2"
+                  className="bg-white border-slate-200 text-slate-700 h-12 rounded-xl hover:bg-slate-50 col-span-2"
                   onClick={() => handleSocialLogin('facebook')}
                 >
                   <Facebook className="mr-2 h-5 w-5 text-blue-600" />
@@ -816,46 +823,36 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
 
               <div className="relative mb-8">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-white/10"></span>
+                  <span className="w-full border-t border-slate-200"></span>
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-slate-800 px-2 text-slate-500 font-bold tracking-widest">Or continue with email</span>
+                  <span className="bg-white px-2 text-slate-500 font-bold tracking-widest">Or continue with email</span>
                 </div>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                  >
-                    <Alert variant="destructive" className="bg-red-500/10 border-red-500/50 text-red-400 rounded-2xl">
-                      <AlertTriangle className="h-5 w-5" />
-                      <AlertDescription className="text-base ml-2">{error}</AlertDescription>
-                    </Alert>
-                  </motion.div>
-                )}
+                {/* Validation and errors are now handled by sonner toast notifications */}
 
                 <div className="space-y-3">
-                  <label className="text-sm font-semibold text-slate-300 uppercase tracking-widest ml-1">Email Address</label>
+                  <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Email Address</label>
                   <Input
                     type="email"
                     placeholder="name@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-slate-900/50 border-white/10 border-2 text-white h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
+                    className="bg-slate-50 border-slate-200 border-2 text-slate-900 h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
                     required
                   />
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-sm font-semibold text-slate-300 uppercase tracking-widest ml-1">Secure Password</label>
+                  <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Secure Password</label>
                   <Input
                     type="password"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-slate-900/50 border-white/10 border-2 text-white h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
+                    className="bg-slate-50 border-slate-200 border-2 text-slate-900 h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
                     required
                   />
                 </div>
@@ -863,7 +860,7 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
                   <Button
                     type="button"
                     variant="outline"
-                    className="bg-white/5 border-white/10 text-white h-10 rounded-xl"
+                    className="bg-white border-slate-200 text-slate-700 hover:bg-slate-50 h-10 rounded-xl"
                     onClick={() => {
                       setEmail('admin@university.edu');
                       setPassword('admin123');
@@ -874,7 +871,7 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
                   <Button
                     type="button"
                     variant="outline"
-                    className="bg-white/5 border-white/10 text-white h-10 rounded-xl"
+                    className="bg-white border-slate-200 text-slate-700 hover:bg-slate-50 h-10 rounded-xl"
                     onClick={() => {
                       setEmail('user@company.com');
                       setPassword('user123');
@@ -886,7 +883,7 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
 
                 <Button
                   type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white h-16 rounded-2xl text-xl font-bold shadow-xl shadow-blue-900/20 transition-all active:scale-95 disabled:opacity-50"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white h-16 rounded-2xl text-xl font-bold shadow-xl shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50"
                   disabled={loading}
                 >
                   {loading ? (
@@ -898,12 +895,12 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
                 </Button>
 
                 <div className="text-center pt-4">
-                  <p className="text-slate-400">
+                  <p className="text-slate-600">
                     Don't have an account?{' '}
                     <button
                       type="button"
                       onClick={onToggleSignup}
-                      className="text-blue-400 font-bold hover:underline"
+                      className="text-blue-600 font-bold hover:underline"
                     >
                       Create one here
                     </button>
@@ -958,21 +955,21 @@ function SignupForm({ onBack, onToggleLogin }: {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-900 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-slate-50 relative overflow-hidden">
       {/* Dynamic background with opaque images */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1523050335102-c89b27819f3a?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1523050335102-c89b27819f3a?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-5 pointer-events-none"></div>
         <motion.div
           animate={{
             rotate: [0, 360],
             scale: [1, 1.2, 1],
           }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-r from-blue-600/10 to-indigo-600/10 rounded-full blur-[120px]"
+          className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-r from-blue-400/20 to-indigo-400/20 rounded-full blur-[120px]"
         />
       </div>
 
-      <nav className="border-b border-white/10 bg-slate-900/50 backdrop-blur-xl relative z-20">
+      <nav className="border-b border-slate-200 bg-white relative z-20">
         <div className="container mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Shield className="h-10 w-10 text-blue-500" />
@@ -983,7 +980,7 @@ function SignupForm({ onBack, onToggleLogin }: {
           <Button
             variant="ghost"
             onClick={onBack}
-            className="text-slate-300 hover:text-white hover:bg-white/10 rounded-xl px-5"
+            className="text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl px-5"
           >
             <ArrowRight className="mr-3 h-5 w-5 rotate-180" />
             Back to Home
@@ -998,92 +995,82 @@ function SignupForm({ onBack, onToggleLogin }: {
           transition={{ duration: 0.5 }}
           className="w-full max-w-lg"
         >
-          <Card className="bg-slate-800/80 backdrop-blur-3xl border-white/10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] overflow-hidden rounded-[32px]">
+          <Card className="bg-white border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] overflow-hidden rounded-[32px]">
             <div className="h-2 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-500"></div>
             <CardHeader className="text-center pt-10 pb-6 px-10">
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="mx-auto bg-blue-500/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+                className="mx-auto bg-blue-50 w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
               >
-                <Plus className="h-8 w-8 text-blue-400" />
+                <Plus className="h-8 w-8 text-blue-600" />
               </motion.div>
-              <CardTitle className="text-4xl font-bold text-white mb-3">Create Account</CardTitle>
-              <CardDescription className="text-slate-400 text-lg">
+              <CardTitle className="text-4xl font-bold text-slate-900 mb-3">Create Account</CardTitle>
+              <CardDescription className="text-slate-600 text-lg">
                 Join the future of academic verification.
               </CardDescription>
             </CardHeader>
             <CardContent className="px-10 pb-12">
               <form onSubmit={handleSignup} className="space-y-6">
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                  >
-                    <Alert variant="destructive" className="bg-red-500/10 border-red-500/50 text-red-400 rounded-2xl">
-                      <AlertTriangle className="h-5 w-5" />
-                      <AlertDescription className="text-base ml-2">{error}</AlertDescription>
-                    </Alert>
-                  </motion.div>
-                )}
+                {/* Validation and errors are now handled by sonner toast notifications */}
 
                 <div className="space-y-3">
-                  <label className="text-sm font-semibold text-slate-300 uppercase tracking-widest ml-1">Full Name</label>
+                  <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Full Name</label>
                   <Input
                     type="text"
                     placeholder="John Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="bg-slate-900/50 border-white/10 border-2 text-white h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
+                    className="bg-slate-50 border-slate-200 border-2 text-slate-900 h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
                     required
                   />
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-sm font-semibold text-slate-300 uppercase tracking-widest ml-1">Email Address</label>
+                  <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Email Address</label>
                   <Input
                     type="email"
                     placeholder="name@university.edu"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-slate-900/50 border-white/10 border-2 text-white h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
+                    className="bg-slate-50 border-slate-200 border-2 text-slate-900 h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
                     required
                   />
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-sm font-semibold text-slate-300 uppercase tracking-widest ml-1">Secure Password</label>
+                  <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Secure Password</label>
                   <Input
                     type="password"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-slate-900/50 border-white/10 border-2 text-white h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
+                    className="bg-slate-50 border-slate-200 border-2 text-slate-900 h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
                     required
                   />
                 </div>
 
                 <Button
                   type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white h-16 rounded-2xl text-xl font-bold shadow-xl shadow-blue-900/20 transition-all active:scale-95 disabled:opacity-50"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white h-16 rounded-2xl text-xl font-bold shadow-xl shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50"
                   disabled={loading}
                 >
                   {loading ? (
                     <span className="flex items-center gap-3">
-                      <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <div className="h-5 w-5 border-2 border-slate-200 border-t-white rounded-full animate-spin" />
                       Creating Account...
                     </span>
                   ) : 'Create My Account'}
                 </Button>
 
                 <div className="text-center pt-4">
-                  <p className="text-slate-400">
+                  <p className="text-slate-600">
                     Already have an account?{' '}
                     <button
                       type="button"
                       onClick={onToggleLogin}
-                      className="text-blue-400 font-bold hover:underline"
+                      className="text-blue-600 font-bold hover:underline"
                     >
                       Sign in here
                     </button>
@@ -1174,27 +1161,27 @@ function VerifyPage({ onBack }: { onBack: () => void }) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-slate-50 relative overflow-hidden">
       {/* Background patterns and images */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-screen"></div>
-        <div className="absolute top-0 center-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#1e293b_0%,transparent_50%)]"></div>
-        <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:30px_30px]"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center opacity-5 pointer-events-none"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,#cbd5e1_0%,transparent_50%)]"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#cbd5e1_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e1_1px,transparent_1px)] bg-[size:30px_30px] opacity-20"></div>
       </div>
 
-      <nav className="border-b border-white/5 bg-slate-950/50 backdrop-blur-xl relative z-20">
+      <nav className="border-b border-slate-200 bg-white relative z-20">
         <div className="container mx-auto px-6 py-5 flex items-center justify-between">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3"
           >
-            <Shield className="h-10 w-10 text-cyan-400" />
-            <span className="text-3xl font-black bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+            <Shield className="h-10 w-10 text-blue-600" />
+            <span className="text-3xl font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               AVA
             </span>
           </motion.div>
-          <Button variant="ghost" onClick={onBack} className="text-slate-400 hover:text-white rounded-xl">
+          <Button variant="ghost" onClick={onBack} className="text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl">
             <ArrowRight className="mr-3 h-5 w-5 rotate-180" />
             Exit Verification
           </Button>
@@ -1208,21 +1195,21 @@ function VerifyPage({ onBack }: { onBack: () => void }) {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
-            <h1 className="text-5xl font-extrabold mb-6 text-white tracking-tight">Verify Credential</h1>
-            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+            <h1 className="text-5xl font-extrabold mb-6 text-slate-900 tracking-tight">Verify Credential</h1>
+            <p className="text-xl text-slate-600 max-w-2xl mx-auto">
               Securely validate academic certificates using our decentralized verification engine.
             </p>
           </motion.div>
 
-          <Card className="bg-slate-900/50 backdrop-blur-3xl border-white/10 shadow-2xl rounded-[32px] overflow-hidden">
+          <Card className="bg-white border-slate-200 shadow-2xl rounded-[32px] overflow-hidden">
             <CardHeader className="pt-10 px-10">
-              <CardTitle className="text-2xl text-white">Advanced Check</CardTitle>
-              <CardDescription className="text-slate-400">Upload high-resolution scans or digital PDFs</CardDescription>
+              <CardTitle className="text-2xl text-slate-900">Advanced Check</CardTitle>
+              <CardDescription className="text-slate-600">Upload high-resolution scans or digital PDFs</CardDescription>
             </CardHeader>
             <CardContent className="p-10">
               <motion.div
                 whileHover={{ scale: 1.01 }}
-                className={`border-4 border-dashed rounded-[24px] p-20 text-center transition-all cursor-pointer ${dragActive ? 'border-cyan-400 bg-cyan-400/5' : 'border-white/10 hover:border-cyan-400/50'
+                className={`border-4 border-dashed rounded-[24px] p-20 text-center transition-all cursor-pointer ${dragActive ? 'border-blue-400 bg-blue-50' : 'border-slate-300 hover:border-blue-400'
                   } relative group`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -1239,26 +1226,26 @@ function VerifyPage({ onBack }: { onBack: () => void }) {
                 <label htmlFor="file-input" className="cursor-pointer block">
                   <motion.div
                     animate={dragActive ? { scale: 1.2 } : { scale: 1 }}
-                    className="h-24 w-24 bg-cyan-400/10 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:bg-cyan-400/20 transition-colors"
+                    className="h-24 w-24 bg-blue-50 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:bg-blue-100 transition-colors"
                   >
-                    <Upload className="h-12 w-12 text-cyan-400" />
+                    <Upload className="h-12 w-12 text-blue-500" />
                   </motion.div>
-                  <h3 className="text-3xl font-bold mb-4 text-white">
+                  <h3 className="text-3xl font-bold mb-4 text-slate-900">
                     {file ? file.name : 'Drop certificate here'}
                   </h3>
-                  <p className="text-xl text-slate-400 mb-6">
+                  <p className="text-xl text-slate-600 mb-6">
                     {file ? 'Document analyzed and ready' : 'Drag and drop or browse from computer'}
                   </p>
                   <div className="flex justify-center gap-3">
-                    <Badge variant="outline" className="text-slate-500 border-white/10">PDF</Badge>
-                    <Badge variant="outline" className="text-slate-500 border-white/10">JPG</Badge>
-                    <Badge variant="outline" className="text-slate-500 border-white/10">PNG</Badge>
+                    <Badge variant="outline" className="text-slate-500 border-slate-200">PDF</Badge>
+                    <Badge variant="outline" className="text-slate-500 border-slate-200">JPG</Badge>
+                    <Badge variant="outline" className="text-slate-500 border-slate-200">PNG</Badge>
                   </div>
                 </label>
               </motion.div>
 
               <Button
-                className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white h-20 text-2xl font-bold mt-10 rounded-2xl shadow-xl shadow-cyan-900/20 active:scale-[0.98] transition-all"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white h-20 text-2xl font-bold mt-10 rounded-2xl shadow-xl shadow-blue-500/20 active:scale-[0.98] transition-all"
                 onClick={handleVerify}
                 disabled={loading}
               >
@@ -1311,7 +1298,7 @@ function VerificationResultCard({ result }: { result: VerificationResult }) {
       <Card className={`overflow-hidden border-2 rounded-[32px] shadow-2xl ${isVerified ? 'border-emerald-500/20 bg-emerald-500/5' :
         isSuspicious ? 'border-amber-500/20 bg-amber-500/5' :
           'border-rose-500/20 bg-rose-500/5'
-        } backdrop-blur-3xl`}>
+        } `}>
         <div className="p-10">
           <div className="flex flex-col md:flex-row items-center gap-8 mb-10">
             <motion.div
@@ -1443,10 +1430,10 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-900 relative overflow-hidden">
-      <div className="absolute inset-0 z-0 bg-[url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-10 mix-blend-overlay"></div>
+    <div className="min-h-screen flex flex-col bg-slate-50 relative overflow-hidden">
+      <div className="absolute inset-0 z-0 bg-[url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-5 pointer-events-none"></div>
       {/* Dynamic background element */}
-      <div className="absolute top-0 left-0 w-full h-64 bg-slate-900 z-0">
+      <div className="absolute top-0 left-0 w-full h-64 bg-transparent z-0">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_50%_120%,#3b82f6,transparent_70%)]"></div>
       </div>
 
@@ -1459,14 +1446,14 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
           className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6"
         >
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tight">Admin Console</h1>
-            <p className="text-slate-400 text-lg mt-1 font-medium italic">Secure Cryptographic Registry</p>
+            <h1 className="text-4xl font-black text-slate-900 tracking-tight">Admin Console</h1>
+            <p className="text-slate-600 text-lg mt-1 font-medium italic">Secure Cryptographic Registry</p>
           </div>
           <Button
             onClick={() => setShowAddForm(!showAddForm)}
             className={`h-14 px-8 rounded-2xl text-lg font-bold shadow-2xl transition-all duration-300 ${showAddForm
               ? 'bg-slate-800 text-white hover:bg-slate-700'
-              : 'bg-white text-slate-900 hover:bg-slate-100 shadow-white/10'
+              : 'bg-blue-600 text-white hover:bg-blue-500 shadow-blue-500/20'
               }`}
           >
             {showAddForm ? <X className="mr-3 h-5 w-5" /> : <Plus className="mr-3 h-6 w-6" />}
@@ -1482,11 +1469,11 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
               exit={{ opacity: 0, height: 0, scale: 0.95 }}
               className="mb-12 overflow-hidden"
             >
-              <Card className="bg-white border-0 shadow-2xl rounded-[32px] overflow-hidden">
+              <Card className="bg-white border border-slate-200 shadow-2xl rounded-[32px] overflow-hidden">
                 <div className="h-2 w-full bg-gradient-to-r from-blue-600 to-indigo-600"></div>
                 <CardHeader className="p-10">
                   <CardTitle className="text-3xl font-black text-slate-900">Certificate Metadata</CardTitle>
-                  <CardDescription className="text-lg">Enter student credentials for blockchain anchoring</CardDescription>
+                  <CardDescription className="text-lg text-slate-600">Enter student credentials for blockchain anchoring</CardDescription>
                 </CardHeader>
                 <CardContent className="px-10 pb-12">
                   <AddCertificateForm onSubmit={handleAddCertificate} onCancel={() => setShowAddForm(false)} />
@@ -1496,15 +1483,17 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
           )}
         </AnimatePresence>
 
-        <Card className="bg-white border-0 shadow-xl rounded-[40px] overflow-hidden">
-          <CardHeader className="p-10 flex flex-row items-center justify-between border-b border-slate-50">
+        <Card className="bg-white border border-slate-200 shadow-xl rounded-[40px] overflow-hidden">
+          <CardHeader className="p-10 flex flex-row items-center justify-between border-b border-slate-100">
             <div>
               <CardTitle className="text-2xl font-bold text-slate-900">Registry Ledger</CardTitle>
-              <CardDescription className="text-slate-500 font-medium">Verified Certificate Repository</CardDescription>
+              <CardDescription className="text-slate-600 font-medium">Verified Certificate Repository</CardDescription>
             </div>
-            <Badge className="bg-blue-50 text-blue-600 border-blue-100 px-4 py-1.5 text-sm font-bold">
-              {certificates.length} RECORDS
-            </Badge>
+            <motion.div whileHover={{ scale: 1.1, rotate: 2 }} whileTap={{ scale: 0.9 }}>
+              <Badge className="bg-blue-50 text-blue-600 border-blue-100 px-4 py-1.5 text-sm font-bold shadow-sm">
+                {certificates.length} RECORDS
+              </Badge>
+            </motion.div>
           </CardHeader>
           <CardContent className="p-0">
             {loading ? (
@@ -1513,16 +1502,16 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
                   <div className="absolute inset-0 rounded-full border-4 border-slate-100"></div>
                   <div className="absolute inset-0 rounded-full border-4 border-t-blue-600 animate-spin"></div>
                 </div>
-                <p className="mt-6 text-slate-400 font-bold uppercase tracking-widest text-sm">Syncing Ledger...</p>
+                <p className="mt-6 text-slate-500 font-bold uppercase tracking-widest text-sm">Syncing Ledger...</p>
               </div>
             ) : certificates.length === 0 ? (
               <div className="py-32 text-center">
-                <div className="bg-slate-50 h-24 w-24 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <AlertTriangle className="h-10 w-10 text-slate-300" />
+                <div className="bg-slate-100 h-24 w-24 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <AlertTriangle className="h-10 w-10 text-slate-400" />
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">No Certificates Issued</h3>
-                <p className="text-slate-500 text-lg mb-8">Start the registry by issuing your first credential.</p>
-                <Button onClick={() => setShowAddForm(true)} variant="outline" className="rounded-xl border-2">
+                <p className="text-slate-600 text-lg mb-8">Start the registry by issuing your first credential.</p>
+                <Button onClick={() => setShowAddForm(true)} variant="outline" className="rounded-xl border-2 border-slate-200 text-slate-700 hover:bg-slate-50">
                   Open Issue Interface
                 </Button>
               </div>
@@ -1567,24 +1556,24 @@ function UserDashboard({ user, onLogout, onVerify }: { user: User; onLogout: () 
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8 bg-white p-10 rounded-[40px] shadow-sm border border-slate-100"
+            className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8 bg-white p-10 rounded-[40px] shadow-2xl border border-slate-200"
           >
             <div className="text-center md:text-left">
               <h1 className="text-4xl font-black text-slate-900 mb-3 tracking-tight">
                 Welcome back, {user.name.split(' ')[0]}
               </h1>
-              <p className="text-xl text-slate-500 font-medium">
+              <p className="text-xl text-slate-600 font-medium">
                 Verify academic credentials with zero trust security.
               </p>
             </div>
             <div className="flex gap-4">
-              <div className="bg-blue-50 p-6 rounded-3xl text-center border border-blue-100">
-                <p className="text-blue-600 font-bold text-3xl">12</p>
-                <p className="text-blue-400 text-xs font-bold uppercase tracking-wider mt-1">Total Checks</p>
+              <div className="bg-blue-900/30 p-6 rounded-3xl text-center border border-blue-800">
+                <p className="text-blue-400 font-bold text-3xl">12</p>
+                <p className="text-blue-300 text-xs font-bold uppercase tracking-wider mt-1">Total Checks</p>
               </div>
-              <div className="bg-green-50 p-6 rounded-3xl text-center border border-green-100">
-                <p className="text-green-600 font-bold text-3xl">100%</p>
-                <p className="text-green-400 text-xs font-bold uppercase tracking-wider mt-1">Accuracy</p>
+              <div className="bg-green-900/30 p-6 rounded-3xl text-center border border-green-800">
+                <p className="text-green-400 font-bold text-3xl">100%</p>
+                <p className="text-green-300 text-xs font-bold uppercase tracking-wider mt-1">Accuracy</p>
               </div>
             </div>
           </motion.div>
@@ -1612,16 +1601,16 @@ function UserDashboard({ user, onLogout, onVerify }: { user: User; onLogout: () 
                 transition={{ delay: i * 0.1 }}
               >
                 <Card
-                  className="group overflow-hidden rounded-[32px] border-0 shadow-xl hover:shadow-2xl transition-all cursor-pointer relative h-full"
+                  className="group overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-xl hover:shadow-blue-500/10 transition-all cursor-pointer relative h-full"
                   onClick={card.onClick}
                 >
                   <div className={`absolute top-0 right-0 w-32 h-32 bg-${card.color}-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500`}></div>
                   <CardContent className="p-10 relative z-10">
-                    <div className={`h-20 w-20 bg-${card.color}-100 rounded-[28px] flex items-center justify-center mb-8 group-hover:bg-${card.color}-600 transition-colors duration-300`}>
+                    <div className={`h-20 w-20 bg-${card.color}-50 border border-${card.color}-100 rounded-[28px] flex items-center justify-center mb-8 group-hover:bg-${card.color}-600 transition-colors duration-300`}>
                       <card.icon className={`h-10 w-10 text-${card.color}-600 group-hover:text-white transition-colors duration-300`} />
                     </div>
                     <h3 className="text-3xl font-bold text-slate-900 mb-4">{card.title}</h3>
-                    <p className="text-lg text-slate-500 leading-relaxed mb-6">
+                    <p className="text-lg text-slate-600 leading-relaxed mb-6">
                       {card.desc}
                     </p>
                     <div className={`flex items-center text-${card.color}-600 font-bold group-hover:translate-x-2 transition-transform`}>
@@ -1638,10 +1627,10 @@ function UserDashboard({ user, onLogout, onVerify }: { user: User; onLogout: () 
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Card className="rounded-[40px] border-0 shadow-lg overflow-hidden">
-              <CardHeader className="p-10 border-b border-slate-50">
-                <CardTitle className="text-2xl font-bold">Recent Verification History</CardTitle>
-                <CardDescription>Real-time view of your latest document checks</CardDescription>
+            <Card className="rounded-[40px] border border-slate-200 bg-white shadow-xl overflow-hidden">
+              <CardHeader className="p-10 border-b border-slate-100">
+                <CardTitle className="text-2xl font-bold text-slate-900">Recent Verification History</CardTitle>
+                <CardDescription className="text-slate-600">Real-time view of your latest document checks</CardDescription>
               </CardHeader>
               <CardContent className="p-10">
                 <motion.div
@@ -1649,8 +1638,8 @@ function UserDashboard({ user, onLogout, onVerify }: { user: User; onLogout: () 
                   animate={{ opacity: 1 }}
                   className="flex flex-col items-center justify-center py-10"
                 >
-                  <div className="bg-slate-50 p-8 rounded-full mb-6">
-                    <FileCheck className="h-12 w-12 text-slate-300" />
+                  <div className="bg-slate-50 border border-slate-100 p-8 rounded-full mb-6">
+                    <FileCheck className="h-12 w-12 text-slate-400" />
                   </div>
                   <p className="text-xl text-slate-500 font-medium">No documents verified yet today</p>
                   <Button variant="link" onClick={onVerify} className="text-blue-600 text-lg mt-2">
@@ -1670,7 +1659,12 @@ function UserDashboard({ user, onLogout, onVerify }: { user: User; onLogout: () 
 
 function DashboardNav({ user, onLogout }: { user: User; onLogout: () => void }) {
   return (
-    <nav className="border-b border-white/10 bg-slate-900/60 backdrop-blur-3xl sticky top-0 z-50">
+    <motion.nav
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      className="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-sm"
+    >
       <div className="container mx-auto px-6 py-5">
         <div className="flex items-center justify-between">
           <motion.div
@@ -1678,21 +1672,23 @@ function DashboardNav({ user, onLogout }: { user: User; onLogout: () => void }) 
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-4"
           >
-            <Shield className="h-10 w-10 text-blue-500" />
-            <span className="text-3xl font-black bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+            <Shield className="h-10 w-10 text-blue-600" />
+            <span className="text-3xl font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               AVA
             </span>
-            <Badge variant="outline" className="ml-4 bg-white/5 border-white/10 text-slate-300 font-bold px-3 py-1 rounded-lg">
-              {user.role === 'ADMIN' ? 'Control Plane' : 'User Terminal'}
-            </Badge>
+            <motion.div whileHover={{ scale: 1.05, y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+              <Badge variant="outline" className="ml-4 bg-slate-50 border-slate-200 text-slate-600 font-bold px-3 py-1 rounded-lg hover:bg-slate-100 transition-colors shadow-sm">
+                {user.role === 'ADMIN' ? 'Control Plane' : 'User Terminal'}
+              </Badge>
+            </motion.div>
           </motion.div>
 
           <div className="flex items-center gap-6">
             <div className="hidden sm:flex flex-col items-end">
-              <span className="text-sm font-black text-white tracking-tight uppercase">
+              <span className="text-sm font-black text-slate-900 tracking-tight uppercase">
                 {user.name}
               </span>
-              <span className="text-[10px] text-blue-400 font-bold uppercase tracking-widest leading-tight">
+              <span className="text-[10px] text-blue-600 font-bold uppercase tracking-widest leading-tight">
                 Session Active
               </span>
             </div>
@@ -1700,7 +1696,7 @@ function DashboardNav({ user, onLogout }: { user: User; onLogout: () => void }) 
               variant="ghost"
               size="sm"
               onClick={onLogout}
-              className="h-12 w-12 sm:w-auto sm:px-4 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 group transition-all"
+              className="h-12 w-12 sm:w-auto sm:px-4 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 group transition-all"
             >
               <LogOut className="h-5 w-5 group-hover:-translate-x-1 transition-transform sm:mr-3" />
               <span className="hidden sm:inline font-bold">Logout</span>
@@ -1708,7 +1704,7 @@ function DashboardNav({ user, onLogout }: { user: User; onLogout: () => void }) 
           </div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   )
 }
 
@@ -1748,7 +1744,7 @@ function AddCertificateForm({ onSubmit, onCancel }: {
               value={(formData as any)[field.key]}
               onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
               placeholder={field.placeholder}
-              className="h-14 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-lg font-medium"
+              className="h-14 bg-slate-50 border-2 border-slate-200 text-slate-900 rounded-2xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-lg font-medium"
               required={field.key !== 'institutionBlockchainId'}
             />
           </div>
@@ -1781,7 +1777,7 @@ function CertificateCard({ certificate }: { certificate: Certificate }) {
       whileHover={{ scale: 1.02, translateY: -4 }}
       className="h-full"
     >
-      <Card className="h-full border-0 shadow-lg hover:shadow-2xl transition-all duration-300 rounded-[32px] overflow-hidden group">
+      <Card className="h-full border border-slate-200 bg-white shadow-lg hover:shadow-2xl transition-all duration-300 rounded-[32px] overflow-hidden group">
         <div className="p-8">
           <div className="flex items-start justify-between mb-8">
             <div className="space-y-2">
@@ -1806,7 +1802,7 @@ function CertificateCard({ certificate }: { certificate: Certificate }) {
             </div>
             <div className="space-y-1">
               <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Registry Code</p>
-              <p className="font-mono text-xs bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 text-blue-600 font-bold">
+              <p className="font-mono text-xs bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 text-blue-600 font-bold">
                 {certificate.certCode}
               </p>
             </div>

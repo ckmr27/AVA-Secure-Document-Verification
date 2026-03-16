@@ -33,43 +33,81 @@ export const authOptions: NextAuthOptions = {
                     return null;
                 }
 
-                let user = await db.user.findUnique({
-                    where: { email: credentials.email.toLowerCase() },
-                });
+                const email = credentials.email.toLowerCase();
+                const password = credentials.password;
 
-                if (!user) {
-                    // Replicate legacy behavior: Auto-create user for demo purposes
-                    // For simplicity and to match legacy, we use the password provided as the initial password
-                    const { hashPassword } = await import("./auth");
-                    const hashedPassword = await hashPassword(credentials.password);
-
-                    user = await db.user.create({
-                        data: {
-                            email: credentials.email.toLowerCase(),
-                            password: hashedPassword,
-                            name: credentials.email.split("@")[0],
-                            role: "USER",
-                        },
+                try {
+                    let user = await db.user.findUnique({
+                        where: { email },
                     });
-                    console.log(`Auto-created demo user via NextAuth: ${credentials.email}`);
-                } else {
-                    if (!user.password) {
-                        return null;
+
+                    if (!user) {
+                        // Replicate legacy behavior: Auto-create user for demo purposes
+                        const { hashPassword } = await import("./auth");
+                        const hashedPassword = await hashPassword(password);
+
+                        user = await db.user.create({
+                            data: {
+                                email,
+                                password: hashedPassword,
+                                name: email.split("@")[0],
+                                role: "USER",
+                            },
+                        });
+                        console.log(`Auto-created demo user via NextAuth: ${email}`);
+                    } else {
+                        if (!user.password) {
+                            return null;
+                        }
+
+                        const isValid = await verifyPassword(password, user.password);
+
+                        if (!isValid) {
+                            return null;
+                        }
                     }
 
-                    const isValid = await verifyPassword(credentials.password, user.password);
+                    return {
+                        id: user.id.toString(),
+                        email: user.email,
+                        name: user.name,
+                        role: user.role,
+                    };
+                } catch (error) {
+                    console.error("Database connection failed, checking offline credentials:", error);
 
-                    if (!isValid) {
-                        return null;
+                    // Offline Fallback Credentials
+                    const OFFLINE_USERS = [
+                        {
+                            email: "admin@ava.com",
+                            password: "admin123",
+                            name: "Demo Admin",
+                            role: "ADMIN"
+                        },
+                        {
+                            email: "user@ava.com",
+                            password: "user123",
+                            name: "Demo User",
+                            role: "USER"
+                        }
+                    ];
+
+                    const offlineUser = OFFLINE_USERS.find(
+                        u => u.email === email && u.password === password
+                    );
+
+                    if (offlineUser) {
+                        console.log(`Logged in via offline fallback: ${email}`);
+                        return {
+                            id: `offline-${offlineUser.role.toLowerCase()}`,
+                            email: offlineUser.email,
+                            name: offlineUser.name,
+                            role: offlineUser.role,
+                        };
                     }
+
+                    return null;
                 }
-
-                return {
-                    id: user.id.toString(),
-                    email: user.email,
-                    name: user.name,
-                    role: user.role,
-                };
             },
         }),
     ],
@@ -89,7 +127,7 @@ export const authOptions: NextAuthOptions = {
         },
     },
     pages: {
-        signIn: "/login",
+        signIn: "/",
     },
     session: {
         strategy: "jwt",

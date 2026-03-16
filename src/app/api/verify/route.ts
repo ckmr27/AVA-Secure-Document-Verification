@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { generateSHA256 } from '@/lib/verification'
+import { generateSHA256, performRealOCR, performImageForensics, uploadToIPFS } from '@/lib/verification'
 import { BLOCKCHAIN_CONFIG } from '@/lib/blockchain.config'
 import {
   verifyCertificateOnBlockchain,
@@ -18,17 +18,27 @@ function generateCertCode(): string {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { certCode, fileContent } = body
+    const { certCode, fileContent, fileName } = body
 
     // Check blockchain status first
     const blockchainStatus = await getBlockchainStatus()
     console.log('🔗 Blockchain Status:', blockchainStatus)
 
-    // If file content is provided, verify by file hash (with REAL blockchain!)
+    // If file content is provided, verify by file hash (with REAL algorithms!)
     if (fileContent) {
-      const fileHash = await generateSHA256(fileContent)
+      // Convert base64 to Buffer
+      const fileBuffer = Buffer.from(fileContent.split(',')[1] || fileContent, 'base64')
+      const fileHash = await generateSHA256(fileBuffer)
 
       console.log(`📄 File Hash: ${fileHash.substring(0, 16)}...`)
+
+      // REAL Algorithm: OCR Text Extraction
+      console.log('🔍 Running Real OCR...')
+      const extractedText = await performRealOCR(fileBuffer)
+
+      // REAL Algorithm: Image Forensics (ELA)
+      console.log('🛡️ Running Image Forensics...')
+      const forensicScore = await performImageForensics(fileBuffer)
 
       // Step 1: Try to find certificate by file hash in database
       let certificate = await db.certificate.findFirst({
@@ -41,10 +51,10 @@ export async function POST(request: NextRequest) {
       // Step 2: If not found by hash, create new certificate (with REAL blockchain!)
       if (!certificate) {
         console.log('🆕 New document detected - registering on blockchain...')
-        
+
         // Auto-generate certificate code
         const newCertCode = generateCertCode()
-        
+
         // Find or create a default institution
         let institution = await db.institution.findFirst()
         if (!institution) {
@@ -60,7 +70,7 @@ export async function POST(request: NextRequest) {
         let systemUser = await db.user.findFirst({
           where: { role: 'ADMIN' },
         })
-        
+
         if (!systemUser) {
           systemUser = await db.user.create({
             data: {
@@ -72,7 +82,7 @@ export async function POST(request: NextRequest) {
           })
         }
 
-        // Extract document metadata
+        // Extract document metadata (In production, parse extractedText for studentName/degree)
         const certData = {
           studentName: 'Uploaded Document',
           degree: 'Document Verification',
@@ -82,9 +92,13 @@ export async function POST(request: NextRequest) {
           fileHash,
         }
 
+        // REAL Algorithm: IPFS Storage
+        console.log('📦 Uploading to IPFS...')
+        const ipfsHash = await uploadToIPFS(fileBuffer, fileName || `${newCertCode}.pdf`)
+
         // Register on REAL blockchain (Ethereum, Fabric, or Simulated)
         const blockchainResult = await registerCertificateOnBlockchain(certData)
-        
+
         if (!blockchainResult.success) {
           return NextResponse.json(
             {
@@ -96,8 +110,7 @@ export async function POST(request: NextRequest) {
         }
 
         console.log('✅ Blockchain Registration Successful!')
-        console.log(`   TX Hash: ${blockchainResult.transactionHash}`)
-        
+
         // Create new certificate from uploaded file with REAL blockchain tx
         certificate = await db.certificate.create({
           data: {
@@ -106,7 +119,7 @@ export async function POST(request: NextRequest) {
             year: certData.year,
             certCode: certData.certCode,
             fileHash,
-            ipfsLink: blockchainResult.ipfsHash || `Qm${Math.random().toString(36).substring(2, 46)}`,
+            ipfsLink: ipfsHash,
             blockchainTxHash: blockchainResult.transactionHash,
             institutionId: institution.id,
             uploadedBy: systemUser.id,
@@ -119,7 +132,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({
           status: 'verified',
-          confidence: 100,
+          confidence: 100 - forensicScore,
           details: {
             studentName: certificate.studentName,
             institution: certificate.institution.name,
@@ -127,46 +140,25 @@ export async function POST(request: NextRequest) {
             year: certificate.year,
             certCode: certificate.certCode,
           },
-          forensicScore: Math.floor(Math.random() * 5),
+          forensicScore,
           blockchainVerified: true,
           blockchainTxHash: certificate.blockchainTxHash,
           blockchainType: blockchainStatus.type,
           isNewCertificate: true,
-          message: '✓ New certificate created and registered on blockchain!',
+          message: '✓ New certificate created, analyzed, and registered!',
           transactionHash: blockchainResult.transactionHash,
-          blockNumber: blockchainStatus.details || 'N/A',
+          ipfsHash,
         })
       }
 
       // Certificate exists with this file hash - verify on REAL blockchain
       console.log('🔍 Existing document detected - verifying on blockchain...')
-      
-      const verificationResult = await verifyCertificateOnBlockchain(fileHash)
-      
-      if (!verificationResult.success) {
-        return NextResponse.json({
-          status: 'suspicious',
-          confidence: 30,
-          details: {
-            studentName: certificate.studentName,
-            institution: certificate.institution.name,
-            degree: certificate.degree,
-            year: certificate.year,
-            certCode: certificate.certCode,
-          },
-          forensicScore: 50,
-          blockchainVerified: false,
-          blockchainType: blockchainStatus.type,
-          error: verificationResult.error,
-          message: 'Blockchain verification failed',
-        })
-      }
 
-      console.log('✅ Blockchain Verification Successful!')
-      
+      const verificationResult = await verifyCertificateOnBlockchain(fileHash)
+
       return NextResponse.json({
-        status: 'verified',
-        confidence: 100,
+        status: verificationResult.success ? 'verified' : 'suspicious',
+        confidence: verificationResult.success ? 100 - forensicScore : 30,
         details: {
           studentName: certificate.studentName,
           institution: certificate.institution.name,
@@ -174,14 +166,15 @@ export async function POST(request: NextRequest) {
           year: certificate.year,
           certCode: certificate.certCode,
         },
-        forensicScore: Math.floor(Math.random() * 5),
-        blockchainVerified: !!certificate.blockchainTxHash,
+        forensicScore,
+        blockchainVerified: verificationResult.success,
         blockchainTxHash: certificate.blockchainTxHash,
         blockchainType: blockchainStatus.type,
         isNewCertificate: false,
-        message: '✓ Existing certificate verified on blockchain!',
+        message: verificationResult.success
+          ? '✓ Existing certificate verified through real-time analysis and blockchain!'
+          : '⚠️ Blockchain verification failed!',
         verificationTxHash: verificationResult.transactionHash,
-        blockNumber: blockchainStatus.details || 'N/A',
       })
     }
 
@@ -238,8 +231,8 @@ export async function POST(request: NextRequest) {
         blockchainTxHash: certificate.blockchainTxHash,
         blockchainType: blockchainStatus.type,
         isNewCertificate: false,
-        message: blockchainVerified 
-          ? '✓ Certificate verified on blockchain!' 
+        message: blockchainVerified
+          ? '✓ Certificate verified on blockchain!'
           : 'Certificate found in database but not verified on blockchain',
       })
     }
