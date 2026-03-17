@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { generateSHA256, performRealOCR, performImageForensics, uploadToIPFS } from '@/lib/verification'
+import { generateSHA256, performImageForensics, uploadToIPFS } from '@/lib/verification'
 import { BLOCKCHAIN_CONFIG } from '@/lib/blockchain.config'
 import {
   verifyCertificateOnBlockchain,
@@ -32,13 +32,12 @@ export async function POST(request: NextRequest) {
 
       console.log(`📄 File Hash: ${fileHash.substring(0, 16)}...`)
 
-      // REAL Algorithm: OCR Text Extraction
-      console.log('🔍 Running Real OCR...')
-      const extractedText = await performRealOCR(fileBuffer)
-
-      // REAL Algorithm: Image Forensics (ELA)
-      console.log('🛡️ Running Image Forensics...')
-      const forensicScore = await performImageForensics(fileBuffer)
+      // Run Forensics and IPFS upload concurrently since neither depends on the database
+      console.log('🛡️ Running Image Forensics & IPFS Upload concurrently...')
+      const [forensicScore, ipfsHash] = await Promise.all([
+        performImageForensics(fileBuffer),
+        uploadToIPFS(fileBuffer, fileName || `UPLOAD-${Date.now()}.pdf`)
+      ])
 
       // Step 1: Try to find certificate by file hash in database
       let certificate = await db.certificate.findFirst({
@@ -76,13 +75,13 @@ export async function POST(request: NextRequest) {
             data: {
               name: 'System User',
               email: `system-${Date.now()}@ava.local`,
-              password: 'system',
+              password: `sys-${Math.random().toString(36).slice(2)}-${Date.now()}`,
               role: 'ADMIN',
             },
           })
         }
 
-        // Extract document metadata (In production, parse extractedText for studentName/degree)
+        // Extract document metadata
         const certData = {
           studentName: 'Uploaded Document',
           degree: 'Document Verification',
@@ -91,10 +90,6 @@ export async function POST(request: NextRequest) {
           certCode: newCertCode,
           fileHash,
         }
-
-        // REAL Algorithm: IPFS Storage
-        console.log('📦 Uploading to IPFS...')
-        const ipfsHash = await uploadToIPFS(fileBuffer, fileName || `${newCertCode}.pdf`)
 
         // Register on REAL blockchain (Ethereum, Fabric, or Simulated)
         const blockchainResult = await registerCertificateOnBlockchain(certData)
@@ -135,7 +130,7 @@ export async function POST(request: NextRequest) {
           confidence: 100 - forensicScore,
           details: {
             studentName: certificate.studentName,
-            institution: certificate.institution.name,
+            institution: certificate.institution?.name || 'Unknown Institution',
             degree: certificate.degree,
             year: certificate.year,
             certCode: certificate.certCode,
@@ -161,7 +156,7 @@ export async function POST(request: NextRequest) {
         confidence: verificationResult.success ? 100 - forensicScore : 30,
         details: {
           studentName: certificate.studentName,
-          institution: certificate.institution.name,
+          institution: certificate.institution?.name || 'Unknown Institution',
           degree: certificate.degree,
           year: certificate.year,
           certCode: certificate.certCode,
@@ -221,7 +216,7 @@ export async function POST(request: NextRequest) {
         confidence: 100,
         details: {
           studentName: certificate.studentName,
-          institution: certificate.institution.name,
+          institution: certificate.institution?.name || 'Unknown Institution',
           degree: certificate.degree,
           year: certificate.year,
           certCode: certificate.certCode,

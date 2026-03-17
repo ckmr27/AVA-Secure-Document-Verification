@@ -37,7 +37,7 @@ let contract: any = null
 
 async function initEthereum() {
   if (!ethers) {
-    ethers = (await import('ethers')).default
+    ethers = await import('ethers')
   }
 
   const provider = new ethers.JsonRpcProvider(
@@ -53,8 +53,8 @@ async function initEthereum() {
 
   if (!contract && BLOCKCHAIN_CONFIG.ethereum?.contractAddress) {
     const abi = [
-      'function verifyCertificate(string certHash) view returns (bool)',
-      'function registerCertificate(string certHash,string data)'
+      'function verifyCertificate(string certHash) view returns (bool, bool, address, uint256)',
+      'function registerCertificate(string certHash, string certCode, string metadata)'
     ]
 
     contract = new ethers.Contract(
@@ -77,12 +77,12 @@ export async function verifyCertificateOnEthereum(
       return simulateCertificateRegistration(fileHash)
     }
 
-    await contract.verifyCertificate(fileHash)
+    const [registered, verified, owner, timestamp] = await contract.verifyCertificate(fileHash)
 
     return {
-      success: true,
+      success: registered,
       certificateId: fileHash,
-      timestamp: new Date().toISOString()
+      timestamp: new Date(Number(timestamp) * 1000).toISOString()
     }
   } catch (error: any) {
     return {
@@ -104,13 +104,14 @@ export async function registerCertificateOnEthereum(
 
     const tx = await contract.registerCertificate(
       data.fileHash,
+      data.certCode,
       JSON.stringify(data)
     )
     const receipt = await tx.wait()
 
     return {
       success: true,
-      transactionHash: receipt.transactionHash,
+      transactionHash: receipt.hash,
       certificateId: data.fileHash,
       timestamp: new Date().toISOString()
     }

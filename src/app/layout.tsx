@@ -53,7 +53,13 @@ export default function RootLayout({
           <div style={{ position: "relative", zIndex: 1 }}>
             {children}
           </div>
-          <Toaster richColors position="top-right" />
+          <Toaster 
+            richColors 
+            position="top-right"
+            toastOptions={{
+              className: 'skeuo-notification animate-in slide-in-from-top-4 fade-in duration-300 font-bold',
+            }}
+          />
         </Providers>
       </body>
     </html>

@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers'
-import { createHash } from 'crypto'
+import bcrypt from 'bcryptjs'
 
 export async function createSession(userId: string, userRole: string, userName: string) {
   const cookieStore = await cookies()
@@ -34,13 +34,9 @@ export async function clearSession() {
 }
 
 export async function hashPassword(password: string): Promise<string> {
-  // Use Node.js crypto module for consistent hashing
-  const hash = createHash('sha256')
-  hash.update(password + 'ava-secret-salt')
-  return hash.digest('hex')
+  return bcrypt.hash(password, 12)
 }
 
 export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
-  const hash = await hashPassword(password)
-  return hash === hashedPassword
+  return bcrypt.compare(password, hashedPassword)
 }

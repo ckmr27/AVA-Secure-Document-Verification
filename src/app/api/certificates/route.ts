@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth-options"
-import { generateSHA256 } from '@/lib/verification'
+import { generateSHA256, uploadToIPFS } from '@/lib/verification'
 import {
   registerCertificateOnBlockchain,
   getBlockchainStatus,
@@ -74,6 +74,7 @@ export async function POST(request: NextRequest) {
       institutionName,
       institutionBlockchainId,
       fileContent,
+      fileName,
     } = body
 
     // Validate required fields
@@ -87,10 +88,26 @@ export async function POST(request: NextRequest) {
     // Check blockchain status
     const blockchainStatus = await getBlockchainStatus()
 
-    // Generate file hash
-    const fileHash = fileContent
-      ? await generateSHA256(fileContent)
-      : await generateSHA256(`${studentName}-${degree}-${year}-${certCode}`)
+    let fileHash: string
+    let ipfsLink: string = `Qm${Math.random().toString(36).substring(2, 46)}` // Default placeholder
+
+    // Handle real document if provided
+    if (fileContent) {
+      const fileBuffer = Buffer.from(fileContent.split(',')[1] || fileContent, 'base64')
+      fileHash = await generateSHA256(fileBuffer)
+
+      console.log('📦 Issuing with real document - Uploading to IPFS...')
+      try {
+        ipfsLink = await uploadToIPFS(fileBuffer, fileName || `${certCode}.pdf`)
+      } catch (ipfsError) {
+        console.error('IPFS Upload Error:', ipfsError)
+        // Fallback or handle error
+      }
+    } else {
+      // Generate hash from metadata if no file provided
+      console.log('📄 Issuing via metadata hash...')
+      fileHash = await generateSHA256(`${studentName}-${degree}-${year}-${certCode.toUpperCase()}`)
+    }
 
     // Check if certificate code already exists
     const existingCert = await db.certificate.findUnique({
@@ -128,7 +145,7 @@ export async function POST(request: NextRequest) {
       fileHash,
     }
 
-    // Register on REAL blockchain (Ethereum, Fabric, or Simulated)
+    // Register on REAL blockchain
     const blockchainResult = await registerCertificateOnBlockchain(certData)
 
     if (!blockchainResult.success) {
@@ -142,19 +159,19 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create certificate in database with REAL blockchain transaction
+    // Create certificate in database
     const certificate = await db.certificate.create({
       data: {
         studentName,
         degree,
         year: parseInt(year),
         certCode: certCode.toUpperCase(),
-        title: `${studentName} - ${degree}`, // Added missing title field
+        title: `${studentName} - ${degree}`,
         fileHash,
-        ipfsLink: blockchainResult.ipfsHash || `Qm${Math.random().toString(36).substring(2, 46)}`,
+        ipfsLink: ipfsLink,
         blockchainTxHash: blockchainResult.transactionHash || null,
         institutionId: institution.id,
-        uploadedBy: parseInt((session.user as any).id),
+        uploadedBy: parseInt((session.user as any).id) || 1,
       },
       include: {
         institution: true,

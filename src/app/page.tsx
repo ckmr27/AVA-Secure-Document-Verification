@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -253,9 +251,11 @@ function Navigation({ onLogin, onVerify }: { onLogin: () => void; onVerify: () =
           </motion.div>
 
           <div className="hidden sm:flex gap-3">
-            <Button variant="ghost" onClick={onLogin} className="text-slate-600 hover:text-blue-600 font-bold uppercase tracking-widest text-xs transition-colors">
-              Portal Access
-            </Button>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button variant="ghost" onClick={onLogin} className="text-slate-600 hover:text-blue-600 font-bold uppercase tracking-widest text-xs transition-colors">
+                Portal Access
+              </Button>
+            </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 onClick={onLogin}
@@ -308,10 +308,10 @@ function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () 
           transition={{ duration: 0.5 }}
         >
           <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }} className="inline-block">
-            <Badge className="mb-6 bg-blue-500/10 text-blue-400 border border-blue-500/20 px-4 py-1 text-sm shadow-xl shadow-blue-500/10">
+            <div className="skeuo-badge mb-6 text-blue-600 px-4 py-1.5 text-sm font-bold rounded-lg border border-blue-100/50">
               <Sparkles className="h-4 w-4 mr-2" />
               Enterprise-Grade Security
-            </Badge>
+            </div>
           </motion.div>
         </motion.div>
 
@@ -774,14 +774,14 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
           transition={{ duration: 0.5 }}
           className="w-full max-w-lg"
         >
-          <Card className="bg-white border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] overflow-hidden rounded-[32px]">
+          <Card className="skeuo-card overflow-hidden">
             <div className="h-2 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-500"></div>
             <CardHeader className="text-center pt-10 pb-6 px-10">
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="mx-auto bg-blue-50 w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+                className="mx-auto skeuo-base w-16 h-16 flex items-center justify-center mb-6"
               >
                 <Lock className="h-8 w-8 text-blue-600" />
               </motion.div>
@@ -792,33 +792,31 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
             </CardHeader>
             <CardContent className="px-10 pb-12">
               <div className="grid grid-cols-2 gap-4 mb-8">
-                <Button
+                <button
                   type="button"
-                  variant="outline"
-                  className="bg-white border-slate-200 text-slate-700 h-12 rounded-xl hover:bg-slate-50"
+                  className="skeuo-button text-slate-700 h-12 rounded-xl flex items-center justify-center font-medium"
                   onClick={() => handleSocialLogin('google')}
                 >
                   <Globe className="mr-2 h-5 w-5 text-blue-400" />
                   Google
-                </Button>
-                <Button
+                </button>
+                <button
                   type="button"
-                  variant="outline"
-                  className="bg-white border-slate-200 text-slate-700 h-12 rounded-xl hover:bg-slate-50"
+                  className="skeuo-button text-slate-700 h-12 rounded-xl flex items-center justify-center font-medium"
                   onClick={() => handleSocialLogin('github')}
                 >
                   <Github className="mr-2 h-5 w-5" />
                   GitHub
-                </Button>
-                <Button
+                </button>
+                <button
                   type="button"
-                  variant="outline"
-                  className="bg-white border-slate-200 text-slate-700 h-12 rounded-xl hover:bg-slate-50 col-span-2"
-                  onClick={() => handleSocialLogin('facebook')}
+                  className="skeuo-button text-slate-400 h-12 rounded-xl col-span-2 cursor-not-allowed opacity-50 flex items-center justify-center font-medium"
+                  title="Facebook login is not configured"
+                  disabled
                 >
-                  <Facebook className="mr-2 h-5 w-5 text-blue-600" />
-                  Continue with Facebook
-                </Button>
+                  <Facebook className="mr-2 h-5 w-5 text-blue-400" />
+                  Continue with Facebook (Coming Soon)
+                </button>
               </div>
 
               <div className="relative mb-8">
@@ -833,57 +831,55 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Validation and errors are now handled by sonner toast notifications */}
 
-                <div className="space-y-3">
+                <div className="space-y-3 relative">
                   <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Email Address</label>
-                  <Input
+                  <input
                     type="email"
                     placeholder="name@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-slate-50 border-slate-200 border-2 text-slate-900 h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
+                    className="skeuo-input text-slate-900 w-full h-14 rounded-2xl px-5 transition-all text-lg"
                     required
                   />
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-3 relative">
                   <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Secure Password</label>
-                  <Input
+                  <input
                     type="password"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-slate-50 border-slate-200 border-2 text-slate-900 h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
+                    className="skeuo-input text-slate-900 w-full h-14 rounded-2xl px-5 transition-all text-lg"
                     required
                   />
                 </div>
                 <div className="flex space-x-4 mb-4">
-                  <Button
+                  <button
                     type="button"
-                    variant="outline"
-                    className="bg-white border-slate-200 text-slate-700 hover:bg-slate-50 h-10 rounded-xl"
+                    className="skeuo-button text-slate-700 h-10 w-full rounded-xl font-medium"
                     onClick={() => {
-                      setEmail('admin@university.edu');
+                      setEmail('admin@ava.com');
                       setPassword('admin123');
                     }}
                   >
                     Fill Admin
-                  </Button>
-                  <Button
+                  </button>
+                  <button
                     type="button"
-                    variant="outline"
-                    className="bg-white border-slate-200 text-slate-700 hover:bg-slate-50 h-10 rounded-xl"
+                    className="skeuo-button text-slate-700 h-10 w-full rounded-xl font-medium"
                     onClick={() => {
-                      setEmail('user@company.com');
+                      setEmail('user@ava.com');
                       setPassword('user123');
                     }}
                   >
                     Fill User
-                  </Button>
+                  </button>
                 </div>
 
-                <Button
+                <button
                   type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white h-16 rounded-2xl text-xl font-bold shadow-xl shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50"
+                  className="skeuo-button-primary w-full h-16 rounded-2xl text-xl font-bold flex items-center justify-center disabled:opacity-50"
                   disabled={loading}
                 >
                   {loading ? (
@@ -892,7 +888,7 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
                       Authenticating...
                     </span>
                   ) : 'Sign In Now'}
-                </Button>
+                </button>
 
                 <div className="text-center pt-4">
                   <p className="text-slate-600">
@@ -995,14 +991,14 @@ function SignupForm({ onBack, onToggleLogin }: {
           transition={{ duration: 0.5 }}
           className="w-full max-w-lg"
         >
-          <Card className="bg-white border-slate-200 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] overflow-hidden rounded-[32px]">
+          <Card className="skeuo-card overflow-hidden">
             <div className="h-2 w-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-500"></div>
             <CardHeader className="text-center pt-10 pb-6 px-10">
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="mx-auto bg-blue-50 w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+                className="mx-auto skeuo-base w-16 h-16 flex items-center justify-center mb-6"
               >
                 <Plus className="h-8 w-8 text-blue-600" />
               </motion.div>
@@ -1017,43 +1013,43 @@ function SignupForm({ onBack, onToggleLogin }: {
 
                 <div className="space-y-3">
                   <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Full Name</label>
-                  <Input
+                  <input
                     type="text"
                     placeholder="John Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="bg-slate-50 border-slate-200 border-2 text-slate-900 h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
+                    className="skeuo-input text-slate-900 w-full h-14 rounded-2xl px-5 transition-all text-lg"
                     required
                   />
                 </div>
 
                 <div className="space-y-3">
                   <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Email Address</label>
-                  <Input
+                  <input
                     type="email"
                     placeholder="name@university.edu"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="bg-slate-50 border-slate-200 border-2 text-slate-900 h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
+                    className="skeuo-input text-slate-900 w-full h-14 rounded-2xl px-5 transition-all text-lg"
                     required
                   />
                 </div>
 
                 <div className="space-y-3">
                   <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Secure Password</label>
-                  <Input
+                  <input
                     type="password"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-slate-50 border-slate-200 border-2 text-slate-900 h-14 rounded-2xl px-5 focus:ring-blue-500 focus:border-blue-500 transition-all text-lg"
+                    className="skeuo-input text-slate-900 w-full h-14 rounded-2xl px-5 transition-all text-lg"
                     required
                   />
                 </div>
 
-                <Button
+                <button
                   type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white h-16 rounded-2xl text-xl font-bold shadow-xl shadow-blue-500/20 transition-all active:scale-95 disabled:opacity-50"
+                  className="skeuo-button-primary w-full h-16 rounded-2xl text-xl font-bold flex items-center justify-center disabled:opacity-50"
                   disabled={loading}
                 >
                   {loading ? (
@@ -1062,7 +1058,7 @@ function SignupForm({ onBack, onToggleLogin }: {
                       Creating Account...
                     </span>
                   ) : 'Create My Account'}
-                </Button>
+                </button>
 
                 <div className="text-center pt-4">
                   <p className="text-slate-600">
@@ -1133,13 +1129,20 @@ function VerifyPage({ onBack }: { onBack: () => void }) {
     setResult(null)
 
     try {
-      const fileContent = await file.text()
+      // Use FileReader to get base64 for real algorithm processing
+      const reader = new FileReader()
+      const fileContent = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string)
+        reader.onerror = reject
+        reader.readAsDataURL(file!)
+      })
 
       const response = await fetch('/api/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fileContent: fileContent,
+          fileName: file.name,
         }),
       })
 
@@ -1201,15 +1204,15 @@ function VerifyPage({ onBack }: { onBack: () => void }) {
             </p>
           </motion.div>
 
-          <Card className="bg-white border-slate-200 shadow-2xl rounded-[32px] overflow-hidden">
-            <CardHeader className="pt-10 px-10">
-              <CardTitle className="text-2xl text-slate-900">Advanced Check</CardTitle>
-              <CardDescription className="text-slate-600">Upload high-resolution scans or digital PDFs</CardDescription>
+          <Card className="skeuo-card overflow-hidden">
+            <CardHeader className="pt-10 px-10 text-center">
+              <CardTitle className="text-3xl font-black text-slate-900 mb-2">Advanced Check</CardTitle>
+              <CardDescription className="text-slate-600 text-lg font-medium">Upload high-resolution scans or digital PDFs</CardDescription>
             </CardHeader>
             <CardContent className="p-10">
               <motion.div
                 whileHover={{ scale: 1.01 }}
-                className={`border-4 border-dashed rounded-[24px] p-20 text-center transition-all cursor-pointer ${dragActive ? 'border-blue-400 bg-blue-50' : 'border-slate-300 hover:border-blue-400'
+                className={`skeuo-input rounded-[24px] p-20 text-center transition-all cursor-pointer ${dragActive ? 'border-2 border-blue-400 bg-blue-50/50' : 'border-2 border-transparent hover:border-blue-400/50'
                   } relative group`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
@@ -1226,9 +1229,9 @@ function VerifyPage({ onBack }: { onBack: () => void }) {
                 <label htmlFor="file-input" className="cursor-pointer block">
                   <motion.div
                     animate={dragActive ? { scale: 1.2 } : { scale: 1 }}
-                    className="h-24 w-24 bg-blue-50 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:bg-blue-100 transition-colors"
+                    className="h-24 w-24 skeuo-base flex items-center justify-center mx-auto mb-8 transition-colors"
                   >
-                    <Upload className="h-12 w-12 text-blue-500" />
+                    <Upload className="h-10 w-10 text-blue-600" />
                   </motion.div>
                   <h3 className="text-3xl font-bold mb-4 text-slate-900">
                     {file ? file.name : 'Drop certificate here'}
@@ -1237,15 +1240,15 @@ function VerifyPage({ onBack }: { onBack: () => void }) {
                     {file ? 'Document analyzed and ready' : 'Drag and drop or browse from computer'}
                   </p>
                   <div className="flex justify-center gap-3">
-                    <Badge variant="outline" className="text-slate-500 border-slate-200">PDF</Badge>
-                    <Badge variant="outline" className="text-slate-500 border-slate-200">JPG</Badge>
-                    <Badge variant="outline" className="text-slate-500 border-slate-200">PNG</Badge>
+                    <div className="skeuo-badge text-slate-500 font-bold px-3 py-1 rounded-lg text-xs">PDF</div>
+                    <div className="skeuo-badge text-slate-500 font-bold px-3 py-1 rounded-lg text-xs">JPG</div>
+                    <div className="skeuo-badge text-slate-500 font-bold px-3 py-1 rounded-lg text-xs">PNG</div>
                   </div>
                 </label>
               </motion.div>
 
-              <Button
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white h-20 text-2xl font-bold mt-10 rounded-2xl shadow-xl shadow-blue-500/20 active:scale-[0.98] transition-all"
+              <button
+                className="w-full skeuo-button-primary h-20 text-2xl font-black mt-10 rounded-2xl transition-all disabled:opacity-50 flex items-center justify-center"
                 onClick={handleVerify}
                 disabled={loading}
               >
@@ -1256,11 +1259,11 @@ function VerifyPage({ onBack }: { onBack: () => void }) {
                   </span>
                 ) : (
                   <>
-                    <Zap className="mr-3 h-7 w-7" />
+                    <Zap className="mr-3 h-7 w-7 text-blue-200" />
                     Start Verification
                   </>
                 )}
-              </Button>
+              </button>
             </CardContent>
           </Card>
 
@@ -1295,9 +1298,9 @@ function VerificationResultCard({ result }: { result: VerificationResult }) {
       animate={{ scale: 1, opacity: 1 }}
       className="mt-12"
     >
-      <Card className={`overflow-hidden border-2 rounded-[32px] shadow-2xl ${isVerified ? 'border-emerald-500/20 bg-emerald-500/5' :
-        isSuspicious ? 'border-amber-500/20 bg-amber-500/5' :
-          'border-rose-500/20 bg-rose-500/5'
+      <Card className={`skeuo-card overflow-hidden transition-all duration-500 ${isVerified ? 'border-emerald-500/20 bg-emerald-50/50' :
+        isSuspicious ? 'border-amber-500/20 bg-amber-50/50' :
+          'border-rose-500/20 bg-rose-50/50'
         } `}>
         <div className="p-10">
           <div className="flex flex-col md:flex-row items-center gap-8 mb-10">
@@ -1314,70 +1317,134 @@ function VerificationResultCard({ result }: { result: VerificationResult }) {
                 isSuspicious ? <AlertTriangle className="h-12 w-12 text-white" /> :
                   <XCircle className="h-12 w-12 text-white" />}
             </motion.div>
-            <div className="text-center md:text-left">
-              <h2 className={`text-4xl font-black mb-2 ${isVerified ? 'text-emerald-400' :
-                isSuspicious ? 'text-amber-400' :
-                  'text-rose-400'
-                }`}>
-                {isVerified ? 'Authenticity Confirmed' :
-                  isSuspicious ? 'Potential Tampering' :
-                    'Verification Error'}
-              </h2>
-              <p className="text-xl text-slate-400 font-medium">
-                {result.message}
+            <div className="text-center md:text-left flex-1">
+              <div className="flex items-center gap-3 mb-2 flex-wrap justify-center md:justify-start">
+                <h2 className={`text-4xl font-black ${isVerified ? 'text-emerald-600' :
+                  isSuspicious ? 'text-amber-600' :
+                    'text-rose-600'
+                  }`}>
+                  {isVerified ? 'Authenticity Confirmed' :
+                    isSuspicious ? 'Potential Tampering' :
+                      'Verification Error'}
+                </h2>
+                {result.blockchainVerified && (
+                  <div className="skeuo-badge bg-blue-50 text-blue-600 px-3 py-1 font-black text-[10px] rounded-lg tracking-widest flex items-center gap-1.5 animate-pulse">
+                    <Shield className="h-3 w-3" />
+                    BLOCKCHAIN ANCHORED
+                  </div>
+                )}
+              </div>
+              <p className="text-xl text-slate-500 font-medium italic">
+                {result.message || (isVerified ? 'Document integrity verified via multi-layer analysis' : 'Analysis detected inconsistencies in document structure')}
               </p>
             </div>
           </div>
 
-          <AnimatePresence>
-            {result.details && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="space-y-6 pt-8 border-t border-white/5"
-              >
-                <div className="grid md:grid-cols-2 gap-10">
-                  <div className="space-y-6">
-                    <div>
-                      <p className="text-slate-500 font-black uppercase tracking-widest text-xs mb-2">Subject Name</p>
-                      <p className="text-2xl font-bold text-white tracking-tight">{result.details.studentName}</p>
-                    </div>
-                    <div>
-                      <p className="text-slate-500 font-black uppercase tracking-widest text-xs mb-2">Credential Type</p>
-                      <p className="text-2xl font-bold text-white tracking-tight">{result.details.degree}</p>
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    <div>
-                      <p className="text-slate-500 font-black uppercase tracking-widest text-xs mb-2">Registry Entity</p>
-                      <p className="text-2xl font-bold text-white tracking-tight">{result.details.institution}</p>
-                    </div>
-                    <div>
-                      <p className="text-slate-500 font-black uppercase tracking-widest text-xs mb-2">Date Filter</p>
-                      <p className="text-2xl font-bold text-white tracking-tight">{result.details.year}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-slate-950/50 p-6 rounded-2xl border border-white/5">
-                  <p className="text-slate-500 font-black uppercase tracking-widest text-[10px] mb-3">Blockchain TX Identifier</p>
-                  <p className="font-mono text-cyan-400 text-sm break-all select-all">{result.details.certCode}</p>
-                </div>
-
-                {isVerified && (
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Metadata Column */}
+            <div className="lg:col-span-2 space-y-8">
+              <AnimatePresence>
+                {result.details && (
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex justify-center pt-6"
+                    className="grid md:grid-cols-2 gap-8 bg-white/50 p-8 rounded-[24px] border border-slate-200 shadow-sm"
                   >
-                    <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 px-6 py-2 rounded-full font-bold text-sm tracking-widest uppercase">
-                      Zero-Knowledge Proof Verified
-                    </Badge>
+                    <div>
+                      <p className="text-slate-400 font-black uppercase tracking-widest text-[10px] mb-2 flex items-center gap-2">
+                        <Users className="h-3 w-3" /> Subject Name
+                      </p>
+                      <p className="text-2xl font-bold text-slate-800 tracking-tight">{result.details.studentName}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400 font-black uppercase tracking-widest text-[10px] mb-2 flex items-center gap-2">
+                        <FileCheck className="h-3 w-3" /> Credential Type
+                      </p>
+                      <p className="text-2xl font-bold text-slate-800 tracking-tight">{result.details.degree}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400 font-black uppercase tracking-widest text-[10px] mb-2 flex items-center gap-2">
+                        <Globe className="h-3 w-3" /> Registry Entity
+                      </p>
+                      <p className="text-xl font-bold text-slate-800 tracking-tight">{result.details.institution}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400 font-black uppercase tracking-widest text-[10px] mb-2 flex items-center gap-2">
+                        <Plus className="h-3 w-3" /> Issuance Year
+                      </p>
+                      <p className="text-xl font-bold text-slate-800 tracking-tight">{result.details.year}</p>
+                    </div>
                   </motion.div>
                 )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </AnimatePresence>
+
+              <div className="bg-slate-900 text-white p-8 rounded-[24px] shadow-2xl space-y-6">
+                <div>
+                  <div className="flex justify-between items-center mb-3">
+                    <p className="text-slate-400 font-black uppercase tracking-widest text-[10px] flex items-center gap-2">
+                      <Zap className="h-3 w-3 text-yellow-400" /> Real-time Forensic Score
+                    </p>
+                    <div className={`skeuo-tag-inset ${result.forensicScore < 15 ? 'text-emerald-500' : 'text-amber-500'} text-[10px] font-black px-2 py-0.5 rounded-md tracking-widest`}>
+                      {result.forensicScore < 15 ? 'HIGH INTEGRITY' : 'NEEDS REVIEW'}
+                    </div>
+                  </div>
+                  <Progress value={100 - result.forensicScore} className="h-3 bg-slate-800" />
+                  <div className="flex justify-between mt-2">
+                    <span className="text-[10px] text-slate-500 font-bold uppercase">Pixel Analysis</span>
+                    <span className="text-[10px] text-slate-300 font-bold">{(100 - result.forensicScore).toFixed(1)}% Authenticity</span>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-white/10">
+                  <p className="text-slate-400 font-black uppercase tracking-widest text-[10px] mb-3 flex items-center gap-2">
+                    <Link className="h-3 w-3 text-blue-400" /> IPFS Decentralized Identifier
+                  </p>
+                  <div className="bg-white/5 p-4 rounded-xl flex items-center justify-between group hover:bg-white/10 transition-all">
+                    <p className="font-mono text-xs text-blue-300 break-all select-all flex-1">
+                      {(result as any).ipfsHash || 'QmPr8... (Processing)'}
+                    </p>
+                    <Button variant="ghost" size="sm" className="ml-4 h-8 text-[10px] text-slate-400 font-bold hover:text-white" onClick={() => (result as any).ipfsHash && window.open(`https://gateway.pinata.cloud/ipfs/${(result as any).ipfsHash}`, '_blank')}>
+                      VIEW ASSET
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Verification Status Column */}
+            <div className="space-y-6">
+              <div className="bg-white border border-slate-200 p-8 rounded-[30px] shadow-sm h-full flex flex-col">
+                <h3 className="text-lg font-black text-slate-800 mb-6 uppercase tracking-wider">Analysis Stream</h3>
+                <div className="space-y-6 flex-1">
+                  {[
+                    { label: 'OCR Extraction', status: 'COMPLETE', icon: CheckCircle2, color: 'text-emerald-500' },
+                    { label: 'ELA Forensic Scan', status: 'COMPLETE', icon: CheckCircle2, color: 'text-emerald-500' },
+                    { label: 'IPFS Replication', status: (result as any).ipfsHash ? 'COMPLETE' : 'PENDING', icon: (result as any).ipfsHash ? CheckCircle2 : Sparkles, color: (result as any).ipfsHash ? 'text-emerald-500' : 'text-blue-500' },
+                    { label: 'Blockchain Commit', status: result.blockchainVerified ? 'COMPLETE' : 'MINING', icon: result.blockchainVerified ? CheckCircle2 : Search, color: result.blockchainVerified ? 'text-emerald-500' : 'text-amber-500' },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-4">
+                      <div className={`p-2 rounded-lg ${item.color.replace('text', 'bg')}/10`}>
+                        <item.icon className={`h-4 w-4 ${item.color}`} />
+                      </div>
+                      <div>
+                        <p className="text-xs font-black text-slate-700 uppercase tracking-tight">{item.label}</p>
+                        <p className={`text-[10px] font-bold ${item.color}`}>{item.status}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-8 pt-8 border-t border-slate-100">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Verification Certificate</p>
+                  <div className="flex gap-2">
+                    <Button variant="outline" className="flex-1 h-12 rounded-xl text-xs font-bold border-2" onClick={() => window.print()}>
+                      <Download className="mr-2 h-4 w-4" /> PDF REPORT
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </Card>
     </motion.div>
@@ -1449,16 +1516,16 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
             <h1 className="text-4xl font-black text-slate-900 tracking-tight">Admin Console</h1>
             <p className="text-slate-600 text-lg mt-1 font-medium italic">Secure Cryptographic Registry</p>
           </div>
-          <Button
+          <button
             onClick={() => setShowAddForm(!showAddForm)}
-            className={`h-14 px-8 rounded-2xl text-lg font-bold shadow-2xl transition-all duration-300 ${showAddForm
-              ? 'bg-slate-800 text-white hover:bg-slate-700'
-              : 'bg-blue-600 text-white hover:bg-blue-500 shadow-blue-500/20'
+            className={`h-14 px-8 rounded-2xl text-lg font-bold flex items-center justify-center transition-all duration-300 ${showAddForm
+              ? 'skeuo-button text-slate-800'
+              : 'skeuo-button-primary'
               }`}
           >
             {showAddForm ? <X className="mr-3 h-5 w-5" /> : <Plus className="mr-3 h-6 w-6" />}
             {showAddForm ? 'Close Editor' : 'Issue New Certificate'}
-          </Button>
+          </button>
         </motion.div>
 
         <AnimatePresence>
@@ -1469,7 +1536,7 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
               exit={{ opacity: 0, height: 0, scale: 0.95 }}
               className="mb-12 overflow-hidden"
             >
-              <Card className="bg-white border border-slate-200 shadow-2xl rounded-[32px] overflow-hidden">
+              <Card className="skeuo-card overflow-hidden">
                 <div className="h-2 w-full bg-gradient-to-r from-blue-600 to-indigo-600"></div>
                 <CardHeader className="p-10">
                   <CardTitle className="text-3xl font-black text-slate-900">Certificate Metadata</CardTitle>
@@ -1483,16 +1550,16 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
           )}
         </AnimatePresence>
 
-        <Card className="bg-white border border-slate-200 shadow-xl rounded-[40px] overflow-hidden">
+        <Card className="skeuo-card overflow-hidden">
           <CardHeader className="p-10 flex flex-row items-center justify-between border-b border-slate-100">
             <div>
               <CardTitle className="text-2xl font-bold text-slate-900">Registry Ledger</CardTitle>
               <CardDescription className="text-slate-600 font-medium">Verified Certificate Repository</CardDescription>
             </div>
             <motion.div whileHover={{ scale: 1.1, rotate: 2 }} whileTap={{ scale: 0.9 }}>
-              <Badge className="bg-blue-50 text-blue-600 border-blue-100 px-4 py-1.5 text-sm font-bold shadow-sm">
+              <div className="skeuo-badge text-blue-600 px-4 py-1.5 text-sm font-bold rounded-lg border border-blue-100/50">
                 {certificates.length} RECORDS
-              </Badge>
+              </div>
             </motion.div>
           </CardHeader>
           <CardContent className="p-0">
@@ -1511,9 +1578,12 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">No Certificates Issued</h3>
                 <p className="text-slate-600 text-lg mb-8">Start the registry by issuing your first credential.</p>
-                <Button onClick={() => setShowAddForm(true)} variant="outline" className="rounded-xl border-2 border-slate-200 text-slate-700 hover:bg-slate-50">
+                <button 
+                  onClick={() => setShowAddForm(true)} 
+                  className="skeuo-button text-slate-700 px-6 py-2 rounded-xl font-bold transition-all active:scale-95"
+                >
                   Open Issue Interface
-                </Button>
+                </button>
               </div>
             ) : (
               <ScrollArea className="h-[700px]">
@@ -1567,13 +1637,13 @@ function UserDashboard({ user, onLogout, onVerify }: { user: User; onLogout: () 
               </p>
             </div>
             <div className="flex gap-4">
-              <div className="bg-blue-900/30 p-6 rounded-3xl text-center border border-blue-800">
-                <p className="text-blue-400 font-bold text-3xl">12</p>
-                <p className="text-blue-300 text-xs font-bold uppercase tracking-wider mt-1">Total Checks</p>
+              <div className="skeuo-tag-inset p-6 rounded-3xl text-center border-blue-800/10 flex flex-col items-center justify-center">
+                <p className="text-blue-600 font-bold text-3xl">12</p>
+                <p className="text-blue-500 text-[10px] font-black uppercase tracking-widest mt-1">Total Checks</p>
               </div>
-              <div className="bg-green-900/30 p-6 rounded-3xl text-center border border-green-800">
-                <p className="text-green-400 font-bold text-3xl">100%</p>
-                <p className="text-green-300 text-xs font-bold uppercase tracking-wider mt-1">Accuracy</p>
+              <div className="skeuo-tag-inset p-6 rounded-3xl text-center border-green-800/10 flex flex-col items-center justify-center">
+                <p className="text-emerald-600 font-bold text-3xl">100%</p>
+                <p className="text-emerald-500 text-[10px] font-black uppercase tracking-widest mt-1">Accuracy</p>
               </div>
             </div>
           </motion.div>
@@ -1601,7 +1671,7 @@ function UserDashboard({ user, onLogout, onVerify }: { user: User; onLogout: () 
                 transition={{ delay: i * 0.1 }}
               >
                 <Card
-                  className="group overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-xl hover:shadow-blue-500/10 transition-all cursor-pointer relative h-full"
+                  className="group skeuo-card transition-all cursor-pointer relative h-full"
                   onClick={card.onClick}
                 >
                   <div className={`absolute top-0 right-0 w-32 h-32 bg-${card.color}-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-500`}></div>
@@ -1627,7 +1697,7 @@ function UserDashboard({ user, onLogout, onVerify }: { user: User; onLogout: () 
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Card className="rounded-[40px] border border-slate-200 bg-white shadow-xl overflow-hidden">
+            <Card className="skeuo-card overflow-hidden">
               <CardHeader className="p-10 border-b border-slate-100">
                 <CardTitle className="text-2xl font-bold text-slate-900">Recent Verification History</CardTitle>
                 <CardDescription className="text-slate-600">Real-time view of your latest document checks</CardDescription>
@@ -1677,9 +1747,9 @@ function DashboardNav({ user, onLogout }: { user: User; onLogout: () => void }) 
               AVA
             </span>
             <motion.div whileHover={{ scale: 1.05, y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-              <Badge variant="outline" className="ml-4 bg-slate-50 border-slate-200 text-slate-600 font-bold px-3 py-1 rounded-lg hover:bg-slate-100 transition-colors shadow-sm">
+              <div className="skeuo-badge ml-4 text-slate-600 font-black px-3 py-1 rounded-lg text-[10px] uppercase tracking-widest">
                 {user.role === 'ADMIN' ? 'Control Plane' : 'User Terminal'}
-              </Badge>
+              </div>
             </motion.div>
           </motion.div>
 
@@ -1712,6 +1782,7 @@ function AddCertificateForm({ onSubmit, onCancel }: {
   onSubmit: (data: any) => void
   onCancel: () => void
 }) {
+  const [file, setFile] = useState<File | null>(null)
   const [formData, setFormData] = useState({
     studentName: '',
     degree: '',
@@ -1721,9 +1792,24 @@ function AddCertificateForm({ onSubmit, onCancel }: {
     institutionBlockchainId: '',
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit(formData)
+
+    let fileContent = ''
+    if (file) {
+      const reader = new FileReader()
+      fileContent = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string)
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+      })
+    }
+
+    onSubmit({
+      ...formData,
+      fileContent,
+      fileName: file?.name
+    })
   }
 
   return (
@@ -1739,33 +1825,44 @@ function AddCertificateForm({ onSubmit, onCancel }: {
         ].map((field) => (
           <div key={field.key} className="space-y-3">
             <label className="text-sm font-black text-slate-600 uppercase tracking-widest">{field.label}</label>
-            <Input
+            <input
               type={field.type}
               value={(formData as any)[field.key]}
               onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
               placeholder={field.placeholder}
-              className="h-14 bg-slate-50 border-2 border-slate-200 text-slate-900 rounded-2xl focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all text-lg font-medium"
+              className="skeuo-input w-full h-14 rounded-2xl transition-all text-lg font-medium px-5"
               required={field.key !== 'institutionBlockchainId'}
             />
           </div>
         ))}
       </div>
 
+      <div className="space-y-3">
+        <label className="text-sm font-black text-slate-600 uppercase tracking-widest">Document Asset (Optional)</label>
+        <div className="flex items-center gap-4">
+          <input
+            type="file"
+            onChange={(e) => setFile(e.target.files?.[0] || null)}
+            className="flex-1 skeuo-input h-14 rounded-2xl file:bg-blue-600 file:text-white file:border-0 file:rounded-lg file:px-4 file:py-2 file:mr-4 file:hover:bg-blue-700 cursor-pointer pt-2 px-3"
+          />
+        </div>
+        <p className="text-xs text-slate-400">Upload the digital certificate to enable ELA forensics and IPFS storage.</p>
+      </div>
+
       <div className="flex gap-4 pt-6 border-t border-slate-100">
-        <Button
+        <button
           type="submit"
-          className="h-16 px-10 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-lg font-bold shadow-xl shadow-blue-600/20 active:scale-95 transition-all"
+          className="skeuo-button-primary h-16 w-full rounded-2xl text-lg font-bold flex justify-center items-center"
         >
           Anchor to Blockchain
-        </Button>
-        <Button
+        </button>
+        <button
           type="button"
-          variant="outline"
           onClick={onCancel}
-          className="h-16 px-10 border-2 rounded-2xl text-lg font-bold text-slate-600 hover:bg-slate-50 transition-all"
+          className="skeuo-button h-16 w-full rounded-2xl text-lg font-bold text-slate-600 flex justify-center items-center"
         >
           Discard Changes
-        </Button>
+        </button>
       </div>
     </form>
   )
@@ -1777,7 +1874,7 @@ function CertificateCard({ certificate }: { certificate: Certificate }) {
       whileHover={{ scale: 1.02, translateY: -4 }}
       className="h-full"
     >
-      <Card className="h-full border border-slate-200 bg-white shadow-lg hover:shadow-2xl transition-all duration-300 rounded-[32px] overflow-hidden group">
+      <Card className="h-full skeuo-card hover:shadow-2xl transition-all duration-300 rounded-[32px] overflow-hidden group">
         <div className="p-8">
           <div className="flex items-start justify-between mb-8">
             <div className="space-y-2">
@@ -1786,15 +1883,15 @@ function CertificateCard({ certificate }: { certificate: Certificate }) {
               </h3>
               <p className="text-lg text-slate-500 font-medium">{certificate.degree}</p>
             </div>
-            <Badge className="bg-emerald-50 text-emerald-600 border-emerald-100 px-4 py-1.5 font-bold uppercase tracking-wider">
+            <div className="skeuo-badge text-emerald-600 px-4 py-1.5 font-black text-[10px] uppercase tracking-widest rounded-lg">
               Cryptographic Secure
-            </Badge>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-x-12 gap-y-6 text-sm">
             <div className="space-y-1">
               <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Institution</p>
-              <p className="font-bold text-slate-700 text-base">{certificate.institution.name}</p>
+              <p className="font-bold text-slate-700 text-base">{certificate.institution?.name ?? 'Unknown Institution'}</p>
             </div>
             <div className="space-y-1">
               <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Class Of</p>
@@ -1822,14 +1919,12 @@ function CertificateCard({ certificate }: { certificate: Certificate }) {
                   Blockchain Anchored
                 </span>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-blue-600 font-bold hover:bg-blue-50 rounded-xl px-4"
+              <button
+                className="skeuo-button text-blue-600 font-bold rounded-xl px-4 py-1.5 transition-all text-xs active:scale-95"
                 onClick={() => window.open(`https://etherscan.io/tx/${certificate.blockchainTxHash}`, '_blank')}
               >
                 Explorer View
-              </Button>
+              </button>
             </div>
           )}
         </div>
