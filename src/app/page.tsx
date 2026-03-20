@@ -308,8 +308,8 @@ function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () 
           transition={{ duration: 0.5 }}
         >
           <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }} className="inline-block">
-            <div className="skeuo-badge mb-6 text-blue-600 px-4 py-1.5 text-sm font-bold rounded-lg border border-blue-100/50">
-              <Sparkles className="h-4 w-4 mr-2" />
+            <div className="skeuo-badge mb-8 text-blue-600 px-5 py-2 text-xs font-black uppercase tracking-[0.2em] rounded-2xl border border-blue-100/50 flex items-center gap-3">
+              <Sparkles className="h-4 w-4 text-blue-500 animate-pulse" />
               Enterprise-Grade Security
             </div>
           </motion.div>
@@ -331,11 +331,34 @@ function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-xl md:text-2xl text-slate-600 mb-12 max-w-3xl mx-auto leading-relaxed"
+          className="text-xl md:text-2xl text-slate-600 mb-8 max-w-3xl mx-auto leading-relaxed"
         >
           Combat academic document fraud with advanced OCR, cryptographic hashing,
           and blockchain-anchored verification. Trust in every certificate.
         </motion.p>
+
+        {/* Skeuomorphic Technology Tags */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="flex flex-wrap justify-center gap-4 mb-16"
+        >
+          {[
+            { label: "OCR Technology", icon: Search },
+            { label: "Blockchain Verified", icon: Link },
+            { label: "SHA-256 Security", icon: Shield },
+            { label: "AI Forensics", icon: Zap }
+          ].map((tag, i) => (
+            <div 
+              key={i} 
+              className="skeuo-tag-inset text-slate-500 hover:text-blue-600 px-5 py-2.5 text-sm font-bold rounded-2xl flex items-center gap-3 transition-colors group cursor-default"
+            >
+              <tag.icon className="h-4 w-4 text-blue-400 group-hover:scale-110 transition-transform" />
+              {tag.label}
+            </div>
+          ))}
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -346,7 +369,7 @@ function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () 
           <Button
             size="lg"
             onClick={onVerify}
-            className="group bg-white hover:bg-slate-50 text-slate-900 border-2 border-slate-200 px-10 py-7 text-xl rounded-2xl transition-all duration-300 shadow-sm"
+            className="group skeuo-button text-slate-900 px-10 py-7 text-xl rounded-2xl transition-all duration-300 font-bold border-0"
           >
             <FileCheck className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
             Verify a Document
@@ -356,7 +379,7 @@ function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () 
             <Button
               size="lg"
               onClick={onLogin}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-7 text-xl rounded-2xl transition-all duration-300 shadow-2xl shadow-blue-500/40 border-0 font-black flex items-center gap-3"
+              className="skeuo-button-primary px-12 py-7 text-xl rounded-2xl transition-all duration-300 border-0 font-black flex items-center gap-3"
             >
               <Zap className="h-6 w-6 text-blue-200" />
               Launch Demo Login
