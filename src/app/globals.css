@@ -367,3 +367,80 @@
   border: 1px solid rgba(226, 232, 240, 0.8);
   backdrop-filter: blur(8px);
 }
+
+/* Dark Mode Skeuomorphism */
+.dark .skeuo-base {
+  background: #0f172a;
+  box-shadow: 
+    8px 8px 16px #020617, 
+    -4px -4px 12px #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark .skeuo-card {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  box-shadow: 
+    20px 20px 40px #020617, 
+    -10px -10px 30px #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark .skeuo-button {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  box-shadow: 
+    5px 5px 10px #020617, 
+    -2px -2px 6px #334155;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark .skeuo-button:hover {
+  background: linear-gradient(145deg, #334155, #1e293b);
+}
+
+.dark .skeuo-button:active {
+  background: #0f172a;
+  box-shadow: 
+    inset 4px 4px 8px #020617, 
+    inset -2px -2px 6px #1e293b;
+}
+
+.dark .skeuo-input {
+  background: #020617;
+  box-shadow: 
+    inset 4px 4px 8px #000000, 
+    inset -1px -1px 4px #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark .skeuo-panel {
+  background: #0f172a;
+  box-shadow: 
+    inset 2px 2px 5px rgba(0,0,0,0.4),
+    inset -1px -1px 3px rgba(255,255,255,0.05);
+  border: 1px solid #1e293b;
+}
+
+.dark .skeuo-badge {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  box-shadow: 
+    2px 2px 4px #020617, 
+    -1px -1px 3px #334155;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark .skeuo-tag-inset {
+  background: #020617;
+  box-shadow: 
+    inset 2px 2px 4px #000000, 
+    inset -1px -1px 3px #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark .skeuo-notification {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  box-shadow: 
+    0 10px 15px -3px rgba(0, 0, 0, 0.5),
+    0 4px 6px -2px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

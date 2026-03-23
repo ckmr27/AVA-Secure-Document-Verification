@@ -181,7 +181,7 @@ export default function Home() {
 
 function LandingPage({ onLogin, onVerify }: { onLogin: () => void; onVerify: () => void }) {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-background text-foreground relative overflow-hidden">
       <div className="absolute inset-0 z-0 bg-[url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-5 pointer-events-none"></div>
       <Navigation onLogin={onLogin} onVerify={onVerify} />
 
@@ -231,7 +231,7 @@ function Navigation({ onLogin, onVerify }: { onLogin: () => void; onVerify: () =
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-sm"
+      className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm"
     >
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
@@ -252,7 +252,7 @@ function Navigation({ onLogin, onVerify }: { onLogin: () => void; onVerify: () =
 
           <div className="hidden sm:flex gap-3">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button variant="ghost" onClick={onLogin} className="text-slate-600 hover:text-blue-600 font-bold uppercase tracking-widest text-xs transition-colors">
+              <Button variant="ghost" onClick={onLogin} className="text-muted-foreground hover:text-blue-600 font-bold uppercase tracking-widest text-xs transition-colors">
                 Portal Access
               </Button>
             </motion.div>
@@ -294,7 +294,7 @@ function Navigation({ onLogin, onVerify }: { onLogin: () => void; onVerify: () =
 
 function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () => void }) {
   return (
-    <section className="relative py-24 px-4 bg-slate-50 text-slate-900 overflow-hidden">
+    <section className="relative py-24 px-4 bg-background text-foreground overflow-hidden">
       {/* Background patterns */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px]"></div>
@@ -331,7 +331,7 @@ function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-xl md:text-2xl text-slate-600 mb-8 max-w-3xl mx-auto leading-relaxed"
+          className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed"
         >
           Combat academic document fraud with advanced OCR, cryptographic hashing,
           and blockchain-anchored verification. Trust in every certificate.
@@ -369,7 +369,7 @@ function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () 
           <Button
             size="lg"
             onClick={onVerify}
-            className="group skeuo-button text-slate-900 px-10 py-7 text-xl rounded-2xl transition-all duration-300 font-bold border-0"
+            className="group skeuo-button text-foreground px-10 py-7 text-xl rounded-2xl transition-all duration-300 font-bold border-0"
           >
             <FileCheck className="mr-3 h-6 w-6 group-hover:scale-110 transition-transform" />
             Verify a Document
@@ -410,54 +410,54 @@ function HeroSection({ onVerify, onLogin }: { onVerify: () => void; onLogin: () 
 
 function ProblemSection() {
   return (
-    <section className="py-16 px-4 bg-white border-t border-slate-100">
+    <section className="py-16 px-4 bg-card border-t border-border">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4 text-slate-900">
+          <h2 className="text-4xl font-bold mb-4 text-foreground">
             The Verification Challenge
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Academic fraud costs institutions and employers millions annually
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-8">
-          <Card className="bg-white border-slate-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100">
+          <Card className="bg-card border-border hover:border-blue-300 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100">
             <CardHeader>
               <div className="h-12 w-12 bg-red-50 rounded-full flex items-center justify-center mb-4">
                 <FileCheck className="h-6 w-6 text-red-600" />
               </div>
-              <CardTitle className="text-xl text-slate-900">Document Fraud</CardTitle>
+              <CardTitle className="text-xl text-foreground">Document Fraud</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-slate-600">
+              <p className="text-muted-foreground">
                 Fake diplomas and transcripts are increasingly sophisticated, making manual verification nearly impossible.
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-slate-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100">
+          <Card className="bg-card border-border hover:border-blue-300 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100">
             <CardHeader>
               <div className="h-12 w-12 bg-orange-50 rounded-full flex items-center justify-center mb-4">
                 <Users className="h-6 w-6 text-orange-600" />
               </div>
-              <CardTitle className="text-xl text-slate-900">Manual Delays</CardTitle>
+              <CardTitle className="text-xl text-foreground">Manual Delays</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-slate-600">
+              <p className="text-muted-foreground">
                 Traditional verification takes weeks, slowing down hiring and enrollment processes significantly.
               </p>
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-slate-200 hover:border-blue-300 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100">
+          <Card className="bg-card border-border hover:border-blue-300 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100">
             <CardHeader>
               <div className="h-12 w-12 bg-yellow-50 rounded-full flex items-center justify-center mb-4">
                 <Lock className="h-6 w-6 text-yellow-600" />
               </div>
-              <CardTitle className="text-xl text-slate-900">Lack of Trust</CardTitle>
+              <CardTitle className="text-xl text-foreground">Lack of Trust</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-slate-600">
+              <p className="text-muted-foreground">
                 No unified, tamper-proof system exists to definitively prove credential authenticity.
               </p>
             </CardContent>
@@ -529,7 +529,7 @@ function HowItWorksSection() {
   ]
 
   return (
-    <section className="py-24 px-4 bg-white relative overflow-hidden">
+    <section className="py-24 px-4 bg-background relative overflow-hidden">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-20">
           <motion.div
@@ -537,11 +537,11 @@ function HowItWorksSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
               How It Works
             </h2>
             <div className="w-24 h-1.5 bg-blue-600 mx-auto rounded-full mb-8"></div>
-            <p className="text-xl text-slate-600 max-w-2xl mx-auto opacity-80">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto opacity-80">
               Simple, secure, and transparent verification process for everyone
             </p>
           </motion.div>
@@ -563,8 +563,8 @@ function HowItWorksSection() {
               >
                 <span className="text-4xl font-black">{step.num}</span>
               </motion.div>
-              <h3 className="text-2xl font-bold mb-4 text-slate-900">{step.title}</h3>
-              <p className="text-lg text-slate-600 leading-relaxed">{step.desc}</p>
+              <h3 className="text-2xl font-bold mb-4 text-foreground">{step.title}</h3>
+              <p className="text-lg text-muted-foreground leading-relaxed">{step.desc}</p>
             </motion.div>
           ))}
         </div>
@@ -598,7 +598,7 @@ function TechnologySection() {
   ]
 
   return (
-    <section className="py-24 px-4 bg-slate-50 border-t border-slate-200">
+    <section className="py-24 px-4 bg-muted/30 border-t border-border">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16">
           <motion.div
@@ -606,10 +606,10 @@ function TechnologySection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
               Technology Stack
             </h2>
-            <p className="text-xl text-slate-600 max-w-2xl mx-auto opacity-80">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto opacity-80">
               Enterprise-grade security through multi-layered technology and decentralized infrastructure
             </p>
           </motion.div>
@@ -623,9 +623,9 @@ function TechnologySection() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <Card className="bg-white border-slate-200 hover:border-blue-300 transition-all duration-300 hover:shadow-2xl h-full group hover:shadow-blue-100">
+              <Card className="bg-card border-border hover:border-blue-300 transition-all duration-300 hover:shadow-2xl h-full group hover:shadow-blue-100">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-2xl text-slate-900">
+                  <CardTitle className="flex items-center gap-3 text-2xl text-foreground">
                     <div className="p-2 bg-blue-50 rounded-lg group-hover:bg-blue-600 transition-colors">
                       <tech.icon className="h-6 w-6 text-blue-600 group-hover:text-white" />
                     </div>
@@ -643,7 +643,7 @@ function TechnologySection() {
                       className="flex items-start gap-3"
                     >
                       <CheckCircle2 className="h-6 w-6 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-slate-600 text-lg leading-snug">{item}</span>
+                      <span className="text-muted-foreground text-lg leading-snug">{item}</span>
                     </motion.div>
                   ))}
                 </CardContent>
@@ -660,7 +660,7 @@ function CTASection({ onVerify }: { onVerify: () => void }) {
   return (
     <section className="py-24 px-4 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white relative overflow-hidden border-t border-blue-500/30">
       <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-card rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-200 rounded-full blur-3xl"></div>
       </div>
 
@@ -680,7 +680,7 @@ function CTASection({ onVerify }: { onVerify: () => void }) {
           <Button
             size="lg"
             onClick={onVerify}
-            className="group bg-white text-blue-700 hover:bg-slate-50 px-12 py-8 text-2xl rounded-2xl shadow-xl shadow-blue-900/20 transition-all duration-300"
+            className="group bg-card text-blue-700 hover:bg-background px-12 py-8 text-2xl rounded-2xl shadow-xl shadow-blue-900/20 transition-all duration-300"
           >
             Verify Your First Document
             <ArrowRight className="ml-3 h-6 w-6 group-hover:translate-x-2 transition-transform" />
@@ -693,20 +693,20 @@ function CTASection({ onVerify }: { onVerify: () => void }) {
 
 function Footer() {
   return (
-    <footer className="bg-slate-50 text-slate-500 py-12 px-4 border-t border-slate-200 relative z-10">
+    <footer className="bg-background text-muted-foreground py-12 px-4 border-t border-border relative z-10">
       <div className="container mx-auto max-w-6xl">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Shield className="h-6 w-6 text-blue-600" />
-              <span className="text-xl font-bold text-slate-900">AVA</span>
+              <span className="text-xl font-bold text-foreground">AVA</span>
             </div>
             <p className="text-sm">
               Enterprise-grade academic credential verification platform
             </p>
           </div>
           <div>
-            <h4 className="font-semibold text-slate-900 mb-4">Platform</h4>
+            <h4 className="font-semibold text-foreground mb-4">Platform</h4>
             <ul className="space-y-2 text-sm">
               <li><a href="#" className="hover:text-blue-600 transition-colors">Verification</a></li>
               <li><a href="#" className="hover:text-blue-600 transition-colors">Dashboard</a></li>
@@ -714,7 +714,7 @@ function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-slate-900 mb-4">Security</h4>
+            <h4 className="font-semibold text-foreground mb-4">Security</h4>
             <ul className="space-y-2 text-sm">
               <li><a href="#" className="hover:text-blue-600 transition-colors">Technology</a></li>
               <li><a href="#" className="hover:text-blue-600 transition-colors">Compliance</a></li>
@@ -722,14 +722,14 @@ function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold text-slate-900 mb-4">Contact</h4>
+            <h4 className="font-semibold text-foreground mb-4">Contact</h4>
             <ul className="space-y-2 text-sm">
               <li>support@ava-platform.com</li>
               <li>1-800-AVA-VERIFY</li>
             </ul>
           </div>
         </div>
-        <div className="border-t border-slate-200 pt-8 text-center text-sm">
+        <div className="border-t border-border pt-8 text-center text-sm">
           <p>&copy; 2025 Authenticity Validator for Academia. All rights reserved.</p>
         </div>
       </div>
@@ -757,7 +757,7 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
       {/* Dynamic background with opaque images */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-5 pointer-events-none"></div>
@@ -771,7 +771,7 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
         />
       </div>
 
-      <nav className="border-b border-slate-200 bg-white relative z-20">
+      <nav className="border-b border-border bg-card relative z-20">
         <div className="container mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Shield className="h-10 w-10 text-blue-500" />
@@ -782,7 +782,7 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
           <Button
             variant="ghost"
             onClick={onBack}
-            className="text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl px-5"
+            className="text-muted-foreground hover:text-foreground hover:bg-slate-100 rounded-xl px-5"
           >
             <ArrowRight className="mr-3 h-5 w-5 rotate-180" />
             Back to Home
@@ -808,8 +808,8 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
               >
                 <Lock className="h-8 w-8 text-blue-600" />
               </motion.div>
-              <CardTitle className="text-4xl font-bold text-slate-900 mb-3">Sign In to AVA</CardTitle>
-              <CardDescription className="text-slate-600 text-lg">
+              <CardTitle className="text-4xl font-bold text-foreground mb-3">Sign In to AVA</CardTitle>
+              <CardDescription className="text-muted-foreground text-lg">
                 Access your secure document vault.
               </CardDescription>
             </CardHeader>
@@ -833,21 +833,20 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
                 </button>
                 <button
                   type="button"
-                  className="skeuo-button text-slate-400 h-12 rounded-xl col-span-2 cursor-not-allowed opacity-50 flex items-center justify-center font-medium"
-                  title="Facebook login is not configured"
-                  disabled
+                  className="skeuo-button text-slate-700 h-12 rounded-xl col-span-2 flex items-center justify-center font-medium"
+                  onClick={() => handleSocialLogin('facebook')}
                 >
-                  <Facebook className="mr-2 h-5 w-5 text-blue-400" />
-                  Continue with Facebook (Coming Soon)
+                  <Facebook className="mr-2 h-5 w-5 text-blue-600" />
+                  Continue with Facebook
                 </button>
               </div>
 
               <div className="relative mb-8">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-slate-200"></span>
+                  <span className="w-full border-t border-border"></span>
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-slate-500 font-bold tracking-widest">Or continue with email</span>
+                  <span className="bg-card px-2 text-slate-500 font-bold tracking-widest">Or continue with email</span>
                 </div>
               </div>
 
@@ -855,25 +854,25 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
                 {/* Validation and errors are now handled by sonner toast notifications */}
 
                 <div className="space-y-3 relative">
-                  <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Email Address</label>
+                  <label className="text-sm font-semibold text-muted-foreground uppercase tracking-widest ml-1">Email Address</label>
                   <input
                     type="email"
                     placeholder="name@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="skeuo-input text-slate-900 w-full h-14 rounded-2xl px-5 transition-all text-lg"
+                    className="skeuo-input text-foreground w-full h-14 rounded-2xl px-5 transition-all text-lg"
                     required
                   />
                 </div>
 
                 <div className="space-y-3 relative">
-                  <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Secure Password</label>
+                  <label className="text-sm font-semibold text-muted-foreground uppercase tracking-widest ml-1">Secure Password</label>
                   <input
                     type="password"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="skeuo-input text-slate-900 w-full h-14 rounded-2xl px-5 transition-all text-lg"
+                    className="skeuo-input text-foreground w-full h-14 rounded-2xl px-5 transition-all text-lg"
                     required
                   />
                 </div>
@@ -914,7 +913,7 @@ function LoginForm({ onBack, onLogin, loading, error, onToggleSignup }: {
                 </button>
 
                 <div className="text-center pt-4">
-                  <p className="text-slate-600">
+                  <p className="text-muted-foreground">
                     Don't have an account?{' '}
                     <button
                       type="button"
@@ -974,7 +973,7 @@ function SignupForm({ onBack, onToggleLogin }: {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
       {/* Dynamic background with opaque images */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1523050335102-c89b27819f3a?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-5 pointer-events-none"></div>
@@ -988,7 +987,7 @@ function SignupForm({ onBack, onToggleLogin }: {
         />
       </div>
 
-      <nav className="border-b border-slate-200 bg-white relative z-20">
+      <nav className="border-b border-border bg-card relative z-20">
         <div className="container mx-auto px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Shield className="h-10 w-10 text-blue-500" />
@@ -999,7 +998,7 @@ function SignupForm({ onBack, onToggleLogin }: {
           <Button
             variant="ghost"
             onClick={onBack}
-            className="text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl px-5"
+            className="text-muted-foreground hover:text-foreground hover:bg-slate-100 rounded-xl px-5"
           >
             <ArrowRight className="mr-3 h-5 w-5 rotate-180" />
             Back to Home
@@ -1025,8 +1024,8 @@ function SignupForm({ onBack, onToggleLogin }: {
               >
                 <Plus className="h-8 w-8 text-blue-600" />
               </motion.div>
-              <CardTitle className="text-4xl font-bold text-slate-900 mb-3">Create Account</CardTitle>
-              <CardDescription className="text-slate-600 text-lg">
+              <CardTitle className="text-4xl font-bold text-foreground mb-3">Create Account</CardTitle>
+              <CardDescription className="text-muted-foreground text-lg">
                 Join the future of academic verification.
               </CardDescription>
             </CardHeader>
@@ -1035,37 +1034,37 @@ function SignupForm({ onBack, onToggleLogin }: {
                 {/* Validation and errors are now handled by sonner toast notifications */}
 
                 <div className="space-y-3">
-                  <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Full Name</label>
+                  <label className="text-sm font-semibold text-muted-foreground uppercase tracking-widest ml-1">Full Name</label>
                   <input
                     type="text"
                     placeholder="John Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="skeuo-input text-slate-900 w-full h-14 rounded-2xl px-5 transition-all text-lg"
+                    className="skeuo-input text-foreground w-full h-14 rounded-2xl px-5 transition-all text-lg"
                     required
                   />
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Email Address</label>
+                  <label className="text-sm font-semibold text-muted-foreground uppercase tracking-widest ml-1">Email Address</label>
                   <input
                     type="email"
                     placeholder="name@university.edu"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="skeuo-input text-slate-900 w-full h-14 rounded-2xl px-5 transition-all text-lg"
+                    className="skeuo-input text-foreground w-full h-14 rounded-2xl px-5 transition-all text-lg"
                     required
                   />
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-sm font-semibold text-slate-600 uppercase tracking-widest ml-1">Secure Password</label>
+                  <label className="text-sm font-semibold text-muted-foreground uppercase tracking-widest ml-1">Secure Password</label>
                   <input
                     type="password"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="skeuo-input text-slate-900 w-full h-14 rounded-2xl px-5 transition-all text-lg"
+                    className="skeuo-input text-foreground w-full h-14 rounded-2xl px-5 transition-all text-lg"
                     required
                   />
                 </div>
@@ -1077,14 +1076,14 @@ function SignupForm({ onBack, onToggleLogin }: {
                 >
                   {loading ? (
                     <span className="flex items-center gap-3">
-                      <div className="h-5 w-5 border-2 border-slate-200 border-t-white rounded-full animate-spin" />
+                      <div className="h-5 w-5 border-2 border-border border-t-white rounded-full animate-spin" />
                       Creating Account...
                     </span>
                   ) : 'Create My Account'}
                 </button>
 
                 <div className="text-center pt-4">
-                  <p className="text-slate-600">
+                  <p className="text-muted-foreground">
                     Already have an account?{' '}
                     <button
                       type="button"
@@ -1187,7 +1186,7 @@ function VerifyPage({ onBack }: { onBack: () => void }) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
       {/* Background patterns and images */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop')] bg-cover bg-center opacity-5 pointer-events-none"></div>
@@ -1195,7 +1194,7 @@ function VerifyPage({ onBack }: { onBack: () => void }) {
         <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#cbd5e1_1px,transparent_1px),linear-gradient(to_bottom,#cbd5e1_1px,transparent_1px)] bg-[size:30px_30px] opacity-20"></div>
       </div>
 
-      <nav className="border-b border-slate-200 bg-white relative z-20">
+      <nav className="border-b border-border bg-card relative z-20">
         <div className="container mx-auto px-6 py-5 flex items-center justify-between">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -1207,7 +1206,7 @@ function VerifyPage({ onBack }: { onBack: () => void }) {
               AVA
             </span>
           </motion.div>
-          <Button variant="ghost" onClick={onBack} className="text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl">
+          <Button variant="ghost" onClick={onBack} className="text-muted-foreground hover:text-foreground hover:bg-slate-100 rounded-xl">
             <ArrowRight className="mr-3 h-5 w-5 rotate-180" />
             Exit Verification
           </Button>
@@ -1221,16 +1220,16 @@ function VerifyPage({ onBack }: { onBack: () => void }) {
             animate={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
-            <h1 className="text-5xl font-extrabold mb-6 text-slate-900 tracking-tight">Verify Credential</h1>
-            <p className="text-xl text-slate-600 max-w-2xl mx-auto">
+            <h1 className="text-5xl font-extrabold mb-6 text-foreground tracking-tight">Verify Credential</h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Securely validate academic certificates using our decentralized verification engine.
             </p>
           </motion.div>
 
           <Card className="skeuo-card overflow-hidden">
             <CardHeader className="pt-10 px-10 text-center">
-              <CardTitle className="text-3xl font-black text-slate-900 mb-2">Advanced Check</CardTitle>
-              <CardDescription className="text-slate-600 text-lg font-medium">Upload high-resolution scans or digital PDFs</CardDescription>
+              <CardTitle className="text-3xl font-black text-foreground mb-2">Advanced Check</CardTitle>
+              <CardDescription className="text-muted-foreground text-lg font-medium">Upload high-resolution scans or digital PDFs</CardDescription>
             </CardHeader>
             <CardContent className="p-10">
               <motion.div
@@ -1256,10 +1255,10 @@ function VerifyPage({ onBack }: { onBack: () => void }) {
                   >
                     <Upload className="h-10 w-10 text-blue-600" />
                   </motion.div>
-                  <h3 className="text-3xl font-bold mb-4 text-slate-900">
+                  <h3 className="text-3xl font-bold mb-4 text-foreground">
                     {file ? file.name : 'Drop certificate here'}
                   </h3>
-                  <p className="text-xl text-slate-600 mb-6">
+                  <p className="text-xl text-muted-foreground mb-6">
                     {file ? 'Document analyzed and ready' : 'Drag and drop or browse from computer'}
                   </p>
                   <div className="flex justify-center gap-3">
@@ -1351,9 +1350,9 @@ function VerificationResultCard({ result }: { result: VerificationResult }) {
                       'Verification Error'}
                 </h2>
                 {result.blockchainVerified && (
-                  <div className="skeuo-badge bg-blue-50 text-blue-600 px-3 py-1 font-black text-[10px] rounded-lg tracking-widest flex items-center gap-1.5 animate-pulse">
-                    <Shield className="h-3 w-3" />
-                    BLOCKCHAIN ANCHORED
+                  <div className="skeuo-badge text-blue-600 px-4 py-1.5 font-black text-[9px] rounded-xl tracking-[0.2em] flex items-center gap-2 border border-blue-100/50 shadow-blue-500/20">
+                    <Shield className="h-3 w-3 text-blue-500" />
+                    IMMUTABLE RECORD
                   </div>
                 )}
               </div>
@@ -1371,7 +1370,7 @@ function VerificationResultCard({ result }: { result: VerificationResult }) {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="grid md:grid-cols-2 gap-8 bg-white/50 p-8 rounded-[24px] border border-slate-200 shadow-sm"
+                    className="grid md:grid-cols-2 gap-8 bg-card/50 p-8 rounded-[24px] border border-border shadow-sm"
                   >
                     <div>
                       <p className="text-slate-400 font-black uppercase tracking-widest text-[10px] mb-2 flex items-center gap-2">
@@ -1407,8 +1406,9 @@ function VerificationResultCard({ result }: { result: VerificationResult }) {
                     <p className="text-slate-400 font-black uppercase tracking-widest text-[10px] flex items-center gap-2">
                       <Zap className="h-3 w-3 text-yellow-400" /> Real-time Forensic Score
                     </p>
-                    <div className={`skeuo-tag-inset ${result.forensicScore < 15 ? 'text-emerald-500' : 'text-amber-500'} text-[10px] font-black px-2 py-0.5 rounded-md tracking-widest`}>
-                      {result.forensicScore < 15 ? 'HIGH INTEGRITY' : 'NEEDS REVIEW'}
+                    <div className={`skeuo-tag-inset ${result.forensicScore < 15 ? 'text-emerald-500' : 'text-amber-500'} text-[9px] font-black px-3 py-1 rounded-lg tracking-[0.2em] border-white/50 border flex items-center gap-2`}>
+                      <div className={`w-1.5 h-1.5 rounded-full ${result.forensicScore < 15 ? 'bg-emerald-500' : 'bg-amber-500'} shadow-[0_0_8px_currentColor]`} />
+                      {result.forensicScore < 15 ? 'TAMPER-FREE' : 'FLAGGED SOURCE'}
                     </div>
                   </div>
                   <Progress value={100 - result.forensicScore} className="h-3 bg-slate-800" />
@@ -1422,7 +1422,7 @@ function VerificationResultCard({ result }: { result: VerificationResult }) {
                   <p className="text-slate-400 font-black uppercase tracking-widest text-[10px] mb-3 flex items-center gap-2">
                     <Link className="h-3 w-3 text-blue-400" /> IPFS Decentralized Identifier
                   </p>
-                  <div className="bg-white/5 p-4 rounded-xl flex items-center justify-between group hover:bg-white/10 transition-all">
+                  <div className="bg-card/5 p-4 rounded-xl flex items-center justify-between group hover:bg-card/10 transition-all">
                     <p className="font-mono text-xs text-blue-300 break-all select-all flex-1">
                       {(result as any).ipfsHash || 'QmPr8... (Processing)'}
                     </p>
@@ -1436,7 +1436,7 @@ function VerificationResultCard({ result }: { result: VerificationResult }) {
 
             {/* Verification Status Column */}
             <div className="space-y-6">
-              <div className="bg-white border border-slate-200 p-8 rounded-[30px] shadow-sm h-full flex flex-col">
+              <div className="bg-card border border-border p-8 rounded-[30px] shadow-sm h-full flex flex-col">
                 <h3 className="text-lg font-black text-slate-800 mb-6 uppercase tracking-wider">Analysis Stream</h3>
                 <div className="space-y-6 flex-1">
                   {[
@@ -1520,7 +1520,7 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
       <div className="absolute inset-0 z-0 bg-[url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-5 pointer-events-none"></div>
       {/* Dynamic background element */}
       <div className="absolute top-0 left-0 w-full h-64 bg-transparent z-0">
@@ -1536,8 +1536,8 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
           className="flex flex-col md:flex-row items-center justify-between mb-12 gap-6"
         >
           <div>
-            <h1 className="text-4xl font-black text-slate-900 tracking-tight">Admin Console</h1>
-            <p className="text-slate-600 text-lg mt-1 font-medium italic">Secure Cryptographic Registry</p>
+            <h1 className="text-4xl font-black text-foreground tracking-tight">Admin Console</h1>
+            <p className="text-muted-foreground text-lg mt-1 font-medium italic">Secure Cryptographic Registry</p>
           </div>
           <button
             onClick={() => setShowAddForm(!showAddForm)}
@@ -1562,8 +1562,8 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
               <Card className="skeuo-card overflow-hidden">
                 <div className="h-2 w-full bg-gradient-to-r from-blue-600 to-indigo-600"></div>
                 <CardHeader className="p-10">
-                  <CardTitle className="text-3xl font-black text-slate-900">Certificate Metadata</CardTitle>
-                  <CardDescription className="text-lg text-slate-600">Enter student credentials for blockchain anchoring</CardDescription>
+                  <CardTitle className="text-3xl font-black text-foreground">Certificate Metadata</CardTitle>
+                  <CardDescription className="text-lg text-muted-foreground">Enter student credentials for blockchain anchoring</CardDescription>
                 </CardHeader>
                 <CardContent className="px-10 pb-12">
                   <AddCertificateForm onSubmit={handleAddCertificate} onCancel={() => setShowAddForm(false)} />
@@ -1576,12 +1576,13 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
         <Card className="skeuo-card overflow-hidden">
           <CardHeader className="p-10 flex flex-row items-center justify-between border-b border-slate-100">
             <div>
-              <CardTitle className="text-2xl font-bold text-slate-900">Registry Ledger</CardTitle>
-              <CardDescription className="text-slate-600 font-medium">Verified Certificate Repository</CardDescription>
+              <CardTitle className="text-2xl font-bold text-foreground">Registry Ledger</CardTitle>
+              <CardDescription className="text-muted-foreground font-medium">Verified Certificate Repository</CardDescription>
             </div>
-            <motion.div whileHover={{ scale: 1.1, rotate: 2 }} whileTap={{ scale: 0.9 }}>
-              <div className="skeuo-badge text-blue-600 px-4 py-1.5 text-sm font-bold rounded-lg border border-blue-100/50">
-                {certificates.length} RECORDS
+            <motion.div whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}>
+              <div className="skeuo-badge text-blue-600 px-5 py-2 text-xs font-black uppercase tracking-[0.2em] rounded-2xl border border-blue-100/50 flex items-center gap-3">
+                <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
+                {certificates.length} REPOSITORY RECORDS
               </div>
             </motion.div>
           </CardHeader>
@@ -1599,8 +1600,8 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
                 <div className="bg-slate-100 h-24 w-24 rounded-full flex items-center justify-center mx-auto mb-6">
                   <AlertTriangle className="h-10 w-10 text-slate-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">No Certificates Issued</h3>
-                <p className="text-slate-600 text-lg mb-8">Start the registry by issuing your first credential.</p>
+                <h3 className="text-2xl font-bold text-foreground mb-2">No Certificates Issued</h3>
+                <p className="text-muted-foreground text-lg mb-8">Start the registry by issuing your first credential.</p>
                 <button 
                   onClick={() => setShowAddForm(true)} 
                   className="skeuo-button text-slate-700 px-6 py-2 rounded-xl font-bold transition-all active:scale-95"
@@ -1637,7 +1638,7 @@ function AdminDashboard({ user, onLogout }: { user: User; onLogout: () => void }
 
 function UserDashboard({ user, onLogout, onVerify }: { user: User; onLogout: () => void; onVerify: () => void }) {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-background relative overflow-hidden">
       <div className="absolute inset-0 z-0 bg-[url('https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-5 pointer-events-none"></div>
       {/* Decorative background elements */}
       <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-600/[0.02] -skew-x-12 transform origin-top-right"></div>
@@ -1649,24 +1650,26 @@ function UserDashboard({ user, onLogout, onVerify }: { user: User; onLogout: () 
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8 bg-white p-10 rounded-[40px] shadow-2xl border border-slate-200"
+            className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8 bg-card p-10 rounded-[40px] shadow-2xl border border-border"
           >
             <div className="text-center md:text-left">
-              <h1 className="text-4xl font-black text-slate-900 mb-3 tracking-tight">
+              <h1 className="text-4xl font-black text-foreground mb-3 tracking-tight">
                 Welcome back, {user.name.split(' ')[0]}
               </h1>
-              <p className="text-xl text-slate-600 font-medium">
+              <p className="text-xl text-muted-foreground font-medium">
                 Verify academic credentials with zero trust security.
               </p>
             </div>
-            <div className="flex gap-4">
-              <div className="skeuo-tag-inset p-6 rounded-3xl text-center border-blue-800/10 flex flex-col items-center justify-center">
-                <p className="text-blue-600 font-bold text-3xl">12</p>
-                <p className="text-blue-500 text-[10px] font-black uppercase tracking-widest mt-1">Total Checks</p>
+            <div className="flex gap-6">
+              <div className="skeuo-tag-inset p-7 rounded-[32px] text-center border-white/20 flex flex-col items-center justify-center relative group min-w-[140px]">
+                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-8 h-1 bg-card/30 rounded-full" />
+                <p className="text-blue-600 font-black text-4xl mb-1 drop-shadow-sm">12</p>
+                <p className="text-blue-400 text-[10px] font-black uppercase tracking-[0.2em]">Checks</p>
               </div>
-              <div className="skeuo-tag-inset p-6 rounded-3xl text-center border-green-800/10 flex flex-col items-center justify-center">
-                <p className="text-emerald-600 font-bold text-3xl">100%</p>
-                <p className="text-emerald-500 text-[10px] font-black uppercase tracking-widest mt-1">Accuracy</p>
+              <div className="skeuo-tag-inset p-7 rounded-[32px] text-center border-white/20 flex flex-col items-center justify-center relative group min-w-[140px]">
+                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-8 h-1 bg-card/30 rounded-full" />
+                <p className="text-emerald-600 font-black text-4xl mb-1 drop-shadow-sm">100%</p>
+                <p className="text-emerald-400 text-[10px] font-black uppercase tracking-[0.2em]">Success</p>
               </div>
             </div>
           </motion.div>
@@ -1702,8 +1705,8 @@ function UserDashboard({ user, onLogout, onVerify }: { user: User; onLogout: () 
                     <div className={`h-20 w-20 bg-${card.color}-50 border border-${card.color}-100 rounded-[28px] flex items-center justify-center mb-8 group-hover:bg-${card.color}-600 transition-colors duration-300`}>
                       <card.icon className={`h-10 w-10 text-${card.color}-600 group-hover:text-white transition-colors duration-300`} />
                     </div>
-                    <h3 className="text-3xl font-bold text-slate-900 mb-4">{card.title}</h3>
-                    <p className="text-lg text-slate-600 leading-relaxed mb-6">
+                    <h3 className="text-3xl font-bold text-foreground mb-4">{card.title}</h3>
+                    <p className="text-lg text-muted-foreground leading-relaxed mb-6">
                       {card.desc}
                     </p>
                     <div className={`flex items-center text-${card.color}-600 font-bold group-hover:translate-x-2 transition-transform`}>
@@ -1722,8 +1725,8 @@ function UserDashboard({ user, onLogout, onVerify }: { user: User; onLogout: () 
           >
             <Card className="skeuo-card overflow-hidden">
               <CardHeader className="p-10 border-b border-slate-100">
-                <CardTitle className="text-2xl font-bold text-slate-900">Recent Verification History</CardTitle>
-                <CardDescription className="text-slate-600">Real-time view of your latest document checks</CardDescription>
+                <CardTitle className="text-2xl font-bold text-foreground">Recent Verification History</CardTitle>
+                <CardDescription className="text-muted-foreground">Real-time view of your latest document checks</CardDescription>
               </CardHeader>
               <CardContent className="p-10">
                 <motion.div
@@ -1731,7 +1734,7 @@ function UserDashboard({ user, onLogout, onVerify }: { user: User; onLogout: () 
                   animate={{ opacity: 1 }}
                   className="flex flex-col items-center justify-center py-10"
                 >
-                  <div className="bg-slate-50 border border-slate-100 p-8 rounded-full mb-6">
+                  <div className="bg-background border border-slate-100 p-8 rounded-full mb-6">
                     <FileCheck className="h-12 w-12 text-slate-400" />
                   </div>
                   <p className="text-xl text-slate-500 font-medium">No documents verified yet today</p>
@@ -1756,7 +1759,7 @@ function DashboardNav({ user, onLogout }: { user: User; onLogout: () => void }) 
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      className="border-b border-slate-200 bg-white sticky top-0 z-50 shadow-sm"
+      className="border-b border-border bg-card sticky top-0 z-50 shadow-sm"
     >
       <div className="container mx-auto px-6 py-5">
         <div className="flex items-center justify-between">
@@ -1770,7 +1773,8 @@ function DashboardNav({ user, onLogout }: { user: User; onLogout: () => void }) 
               AVA
             </span>
             <motion.div whileHover={{ scale: 1.05, y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-              <div className="skeuo-badge ml-4 text-slate-600 font-black px-3 py-1 rounded-lg text-[10px] uppercase tracking-widest">
+              <div className="skeuo-badge ml-4 text-muted-foreground font-black px-4 py-1.5 rounded-xl text-[9px] uppercase tracking-[0.2em] border border-slate-100/50 flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_5px_rgba(59,130,246,0.5)]" />
                 {user.role === 'ADMIN' ? 'Control Plane' : 'User Terminal'}
               </div>
             </motion.div>
@@ -1778,7 +1782,7 @@ function DashboardNav({ user, onLogout }: { user: User; onLogout: () => void }) 
 
           <div className="flex items-center gap-6">
             <div className="hidden sm:flex flex-col items-end">
-              <span className="text-sm font-black text-slate-900 tracking-tight uppercase">
+              <span className="text-sm font-black text-foreground tracking-tight uppercase">
                 {user.name}
               </span>
               <span className="text-[10px] text-blue-600 font-bold uppercase tracking-widest leading-tight">
@@ -1789,7 +1793,7 @@ function DashboardNav({ user, onLogout }: { user: User; onLogout: () => void }) 
               variant="ghost"
               size="sm"
               onClick={onLogout}
-              className="h-12 w-12 sm:w-auto sm:px-4 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 group transition-all"
+              className="h-12 w-12 sm:w-auto sm:px-4 rounded-xl text-slate-500 hover:text-foreground hover:bg-slate-100 group transition-all"
             >
               <LogOut className="h-5 w-5 group-hover:-translate-x-1 transition-transform sm:mr-3" />
               <span className="hidden sm:inline font-bold">Logout</span>
@@ -1847,7 +1851,7 @@ function AddCertificateForm({ onSubmit, onCancel }: {
           { label: 'Blockchain ID (Optional)', key: 'institutionBlockchainId', placeholder: 'REG-123-INST', type: 'text' },
         ].map((field) => (
           <div key={field.key} className="space-y-3">
-            <label className="text-sm font-black text-slate-600 uppercase tracking-widest">{field.label}</label>
+            <label className="text-sm font-black text-muted-foreground uppercase tracking-widest">{field.label}</label>
             <input
               type={field.type}
               value={(formData as any)[field.key]}
@@ -1861,7 +1865,7 @@ function AddCertificateForm({ onSubmit, onCancel }: {
       </div>
 
       <div className="space-y-3">
-        <label className="text-sm font-black text-slate-600 uppercase tracking-widest">Document Asset (Optional)</label>
+        <label className="text-sm font-black text-muted-foreground uppercase tracking-widest">Document Asset (Optional)</label>
         <div className="flex items-center gap-4">
           <input
             type="file"
@@ -1882,7 +1886,7 @@ function AddCertificateForm({ onSubmit, onCancel }: {
         <button
           type="button"
           onClick={onCancel}
-          className="skeuo-button h-16 w-full rounded-2xl text-lg font-bold text-slate-600 flex justify-center items-center"
+          className="skeuo-button h-16 w-full rounded-2xl text-lg font-bold text-muted-foreground flex justify-center items-center"
         >
           Discard Changes
         </button>
@@ -1901,13 +1905,14 @@ function CertificateCard({ certificate }: { certificate: Certificate }) {
         <div className="p-8">
           <div className="flex items-start justify-between mb-8">
             <div className="space-y-2">
-              <h3 className="font-black text-2xl text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">
+              <h3 className="font-black text-2xl text-foreground tracking-tight group-hover:text-blue-600 transition-colors">
                 {certificate.studentName}
               </h3>
               <p className="text-lg text-slate-500 font-medium">{certificate.degree}</p>
             </div>
-            <div className="skeuo-badge text-emerald-600 px-4 py-1.5 font-black text-[10px] uppercase tracking-widest rounded-lg">
-              Cryptographic Secure
+            <div className="skeuo-badge text-emerald-600 px-4 py-1.5 font-black text-[9px] uppercase tracking-[0.2em] rounded-xl border border-emerald-100/50 flex items-center gap-2">
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+              Secure Hub
             </div>
           </div>
 
@@ -1922,13 +1927,13 @@ function CertificateCard({ certificate }: { certificate: Certificate }) {
             </div>
             <div className="space-y-1">
               <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Registry Code</p>
-              <p className="font-mono text-xs bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 text-blue-600 font-bold">
+              <p className="skeuo-tag-inset font-mono text-xs px-4 py-2 rounded-xl text-blue-600 font-bold border-white/40">
                 {certificate.certCode}
               </p>
             </div>
             <div className="space-y-1">
               <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Hash Fingerprint</p>
-              <p className="font-mono text-xs truncate max-w-[120px] text-slate-500">
+              <p className="skeuo-tag-inset font-mono text-[9px] px-3 py-1.5 rounded-lg text-slate-500 truncate max-w-[130px] border-white/30">
                 {certificate.blockchainTxHash || 'Anchoring...'}
               </p>
             </div>

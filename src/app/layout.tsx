@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { Providers } from "@/components/Providers";
 import MarqueeBackground from "@/components/MarqueeBackground";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,6 +51,7 @@ export default function RootLayout({
       >
         <MarqueeBackground />
         <Providers>
+          <ThemeToggle />
           <div style={{ position: "relative", zIndex: 1 }}>
             {children}
           </div>
