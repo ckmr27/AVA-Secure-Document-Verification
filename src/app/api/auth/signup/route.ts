@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
                 name,
                 email: email.toLowerCase(),
                 password: hashedPassword,
-                role: 'USER',
+                role: (email.toLowerCase() === 'admin@ava.com' || email.toLowerCase() === 'admin@university.edu') ? 'ADMIN' : 'USER',
             },
         })
 

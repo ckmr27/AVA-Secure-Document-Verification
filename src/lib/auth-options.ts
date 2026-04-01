@@ -51,7 +51,7 @@ export const authOptions: NextAuthOptions = {
                                 email,
                                 password: hashedPassword,
                                 name: email.split("@")[0],
-                                role: "USER",
+                                role: (email === "admin@ava.com" || email === "admin@university.edu") ? "ADMIN" : "USER",
                             },
                         });
                         console.log(`Auto-created demo user via NextAuth: ${email}`);
@@ -64,6 +64,14 @@ export const authOptions: NextAuthOptions = {
 
                         if (!isValid) {
                             return null;
+                        }
+
+                        // Ensure demo admin stays admin
+                        if ((email === "admin@ava.com" || email === "admin@university.edu") && user.role !== "ADMIN") {
+                            user = await db.user.update({
+                                where: { email },
+                                data: { role: "ADMIN" }
+                            });
                         }
                     }
 
@@ -116,12 +124,15 @@ export const authOptions: NextAuthOptions = {
             if (session.user) {
                 (session.user as any).id = token.sub;
                 (session.user as any).role = token.role;
-            }
+            }   
             return session;
         },
         async jwt({ token, user }) {
             if (user) {
                 token.role = (user as any).role;
+                if (user.email === "admin@ava.com" || user.email === "admin@university.edu") {
+                    token.role = "ADMIN";
+                }
             }
             return token;
         },

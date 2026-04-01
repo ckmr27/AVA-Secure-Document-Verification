@@ -57,9 +57,9 @@ export default function RootLayout({
           </div>
           <Toaster 
             richColors 
-            position="top-right"
+            position="bottom-center"
             toastOptions={{
-              className: 'skeuo-notification animate-in slide-in-from-top-4 fade-in duration-300 font-bold',
+              className: 'skeuo-notification animate-in slide-in-from-bottom-4 fade-in duration-300 font-bold',
             }}
           />
         </Providers>
