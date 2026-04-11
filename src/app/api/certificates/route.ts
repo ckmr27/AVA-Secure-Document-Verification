@@ -7,6 +7,8 @@ import {
   registerCertificateOnBlockchain,
   getBlockchainStatus,
 } from '@/lib/blockchain.service'
+import { IssueSchema } from '@/lib/schemas'
+import { rateLimit } from '@/lib/rate-limiter'
 
 export async function GET(request: NextRequest) {
   try {
@@ -65,7 +67,24 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Rate Limit Check (20 issuances per minute per admin IP)
+    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    const rlResult = await rateLimit(`api:issue:${ip}`, 20, 60);
+    if (!rlResult.success) {
+      return NextResponse.json({ error: "Too many issuance requests. Please slow down." }, { status: 429 });
+    }
+
     const body = await request.json()
+    
+    // Validate Input with Zod
+    const validation = IssueSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ 
+        error: "Invalid input", 
+        details: validation.error.flatten().fieldErrors 
+      }, { status: 400 });
+    }
+
     const {
       studentName,
       degree,
@@ -75,7 +94,7 @@ export async function POST(request: NextRequest) {
       institutionBlockchainId,
       fileContent,
       fileName,
-    } = body
+    } = validation.data
 
     // Validate required fields
     if (!studentName || !degree || !year || !certCode || !institutionName) {

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { generateSHA256, performImageForensics, uploadToIPFS } from '@/lib/verification'
 import { BLOCKCHAIN_CONFIG } from '@/lib/blockchain.config'
+import { VerifySchema } from '@/lib/schemas'
+import { rateLimit } from '@/lib/rate-limiter'
 import {
   verifyCertificateOnBlockchain,
   registerCertificateOnBlockchain,
@@ -17,8 +19,25 @@ function generateCertCode(): string {
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate Limit Check (60 requests per minute per IP for verification)
+    const ip = request.headers.get("x-forwarded-for") || "unknown";
+    const rlResult = await rateLimit(`api:verify:${ip}`, 60, 60);
+    if (!rlResult.success) {
+      return NextResponse.json({ error: "Too many requests. Please slow down." }, { status: 429 });
+    }
+
     const body = await request.json()
-    const { certCode, fileContent, fileName } = body
+    
+    // Validate Input with Zod
+    const validation = VerifySchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ 
+        error: "Invalid input", 
+        details: validation.error.flatten().fieldErrors 
+      }, { status: 400 });
+    }
+
+    const { certCode, fileContent, fileName } = validation.data
 
     // Check blockchain status first
     const blockchainStatus = await getBlockchainStatus()

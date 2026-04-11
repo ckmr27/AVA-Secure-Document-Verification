@@ -6,6 +6,7 @@ import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "./db";
 import { verifyPassword } from "./auth";
+import { rateLimit } from "./rate-limiter";
 
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(db),
@@ -28,13 +29,22 @@ export const authOptions: NextAuthOptions = {
                 email: { label: "Email", type: "email" },
                 password: { label: "Password", type: "password" },
             },
-            async authorize(credentials) {
+            async authorize(credentials, req) {
                 if (!credentials?.email || !credentials?.password) {
                     return null;
                 }
 
                 const email = credentials.email.toLowerCase();
                 const password = credentials.password;
+
+                // Rate limiting for login attempts: 5 per 15 minutes
+                // Use key format "login:email:ip" to be specific
+                const ip = (req as any).headers?.["x-forwarded-for"] || "unknown";
+                const rlResult = await rateLimit(`login:${email}:${ip}`, 5, 15 * 60);
+                
+                if (!rlResult.success) {
+                    throw new Error("Too many login attempts. Please try again in 15 minutes.");
+                }
 
                 try {
                     let user = await db.user.findUnique({
@@ -84,17 +94,17 @@ export const authOptions: NextAuthOptions = {
                 } catch (error) {
                     console.error("Database connection failed, checking offline credentials:", error);
 
-                    // Offline Fallback Credentials
+                    // Offline Fallback Credentials (moved to Environment Variables)
                     const OFFLINE_USERS = [
                         {
-                            email: "admin@ava.com",
-                            password: "admin123",
+                            email: process.env.OFFLINE_ADMIN_EMAIL || "admin@ava.com",
+                            password: process.env.OFFLINE_ADMIN_PASSWORD || "admin123",
                             name: "Demo Admin",
                             role: "ADMIN"
                         },
                         {
-                            email: "user@ava.com",
-                            password: "user123",
+                            email: process.env.OFFLINE_USER_EMAIL || "user@ava.com",
+                            password: process.env.OFFLINE_USER_PASSWORD || "user123",
                             name: "Demo User",
                             role: "USER"
                         }
