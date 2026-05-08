@@ -17,7 +17,7 @@ Educational credential fraud represents a significant challenge in academic inst
 - Creating cryptographic fingerprints (SHA-256) of documents
 - Optionally registering certificates on blockchain for immutable proof
 - Offering enterprise-grade security with role-based access control
-- Supporting multiple blockchain backends (Ethereum, Hyperledger Fabric, or local simulation)
+- Supporting multiple blockchain backends (Ethereum or local simulation)
 
 ---
 
@@ -31,11 +31,11 @@ Educational credential fraud represents a significant challenge in academic inst
 - ✅ **Confidence Scoring** - 0-100% authenticity confidence metric
 
 ### Blockchain Integration
-- ✅ **Multi-Blockchain Support** - Ethereum, Hyperledger Fabric, or simulation mode
-- ✅ **Immutable Record Storage** - Certificate registration on blockchain
-- ✅ **Transaction Tracking** - Real blockchain transaction hashes and block numbers
-- ✅ **Smart Contract Integration** - Solidity contracts with event logging
-- ✅ **Enterprise Consensus** - Hyperledger Fabric for consortium governance
+- ✅ **Simulation Mode** (Default) - No blockchain setup required, instant verification
+- ✅ **Ethereum Support** (Testnet) - Real smart contract calls on Sepolia testnet
+- ⏳ **Hyperledger Fabric** (Planned) - Not yet implemented, currently uses simulation
+- ✅ **Transaction Tracking** - Blockchain metadata storage (for Ethereum)
+- ✅ **Mock Transactions** - Simulated hashes for testing without blockchain
 
 ### Security & Access Control
 - ✅ **Role-Based Access** - Admin and user roles with appropriate permissions
@@ -73,12 +73,12 @@ Educational credential fraud represents a significant challenge in academic inst
 
 ### Database
 - **SQLite (Development)** - Lightweight local development
+- **PostgreSQL (Production)** - Recommended for production deployments
 - **Prisma Migrations** - Schema versioning and deployments
 - **Seed Data** - Pre-populated test credentials
 
 ### Blockchain Integration
-- **ethers.js 6** - Ethereum Web3 library
-- **Hyperledger Fabric SDK** - Enterprise blockchain support
+- **ethers.js 6** - Ethereum Web3 library (for Ethereum mode)
 - **Simulation Mode** - No external blockchain required for testing
 
 ### DevTools
@@ -102,15 +102,14 @@ Database Lookup
     ├─ Found: Retrieve stored certificate
     └─ Not Found: Generate new certificate code
     ↓
-Blockchain Verification
+Blockchain Verification (if enabled)
     ├─ ETHEREUM: ethers.js smart contract call
-    ├─ FABRIC: Fabric SDK chaincode invocation
     └─ SIMULATION: In-memory transaction simulation
     ↓
 Return Verification Result
     ├─ Status (Verified / Suspicious / Not Found)
     ├─ Confidence Score
-    ├─ Blockchain Proof (TX Hash, Block Number)
+    ├─ Blockchain Proof (TX Hash)
     └─ Certificate Details
 ```
 
@@ -127,7 +126,7 @@ API Routes (src/app/api/)
         └─ getBlockchainStatus()
         ↓
     Blockchain Config (src/lib/blockchain.config.ts)
-        └─ Route to ETHEREUM, FABRIC, or SIMULATION
+        └─ Route to ETHEREUM or SIMULATION
         ↓
     Verification Logic (src/lib/verification.ts)
         ├─ computeHash() → SHA-256
@@ -145,8 +144,8 @@ API Routes (src/app/api/)
 
 **Certificate**
 - ID, institutionId, studentName, degree, year
-- hash (SHA-256), blockchainTxHash, blockNumber
-- blockchainType (ETHEREUM/FABRIC/SIMULATION)
+- hash (SHA-256), blockchainTxHash
+- created/updated timestamps
 
 **Institution**
 - ID, name, city, country, verificationStatus
@@ -159,7 +158,6 @@ API Routes (src/app/api/)
 - Node.js 18+ or Bun 1.0+
 - Git
 - (Optional) Alchemy account for Ethereum testnet
-- (Optional) Docker for Hyperledger Fabric
 
 ### Quick Start (Simulation Mode - No Blockchain Required)
 
@@ -168,28 +166,29 @@ API Routes (src/app/api/)
 git clone https://github.com/ckmr27/AVA-Secure-Document-Verification.git
 cd AVA-Secure-Document-Verification
 
-# 2. Install dependencies
+# 2. Copy environment template and edit as needed
+cp .env.example .env
+
+# 3. Install dependencies
 npm install
-# or
-bun install
 
-# 3. Setup database
+# 4. Setup database
 npm run db:push
-npm run db:generate
 
-# 4. Seed with test data
+# 5. (Optional) Seed with test data
 npx ts-node prisma/seed.ts
 
-# 5. Start development server
+# 6. Start development server
 npm run dev
 
 # Access at http://localhost:3000
+# Login: admin@ava.com / admin123 (if configured in .env)
 ```
 
 ### Ethereum Testnet Setup
 
 ```bash
-# 1. Configure environment
+# 1. Create .env from example
 cp .env.example .env
 
 # 2. Edit .env with:
@@ -199,18 +198,13 @@ ETHEREUM_API_KEY=YOUR_ALCHEMY_API_KEY
 ETHEREUM_CONTRACT_ADDRESS=0xYourDeployedContractAddress
 ETHEREUM_PRIVATE_KEY=YourPrivateKey
 
-# 3. Deploy smart contract
-# Visit: https://remix.ethereum.org/
-# Use: blockchain-contracts/CertificateRegistry.sol
-# Deploy to: Sepolia testnet (free test ETH available)
-
+# 3. Deploy smart contract (see docs)
 # 4. Start
 npm run dev
 ```
 
-### Hyperledger Fabric Setup
-
-See **BLOCKCHAIN_SETUP.md** for complete Docker-based Fabric network setup with connection profiles, wallet management, and chaincode deployment.
+**Smart Contract Deployment Guide:**
+See BLOCKCHAIN_SETUP.md for complete instructions on deploying to Ethereum testnet.
 
 ---
 
@@ -225,19 +219,19 @@ See **BLOCKCHAIN_SETUP.md** for complete Docker-based Fabric network setup with 
 4. **View results**:
    - Status badge (Verified/Suspicious/Not Found)
    - Confidence score
-   - Blockchain transaction hash
+   - Blockchain transaction hash (if Ethereum mode)
    - Certificate details (if verified)
 
 ### For Administrators: Manage Certificates
 
-1. **Login** with admin credentials
+1. **Login** with admin credentials (from .env)
 2. **Navigate to Admin Dashboard**
 3. **Add Certificate**:
    - Enter: Student name, degree, year, institution
-   - Select blockchain (ETHEREUM/FABRIC/SIMULATION)
+   - Select blockchain (ETHEREUM/SIMULATION)
    - Submit → Certificate registered on blockchain
 4. **View All Certificates**:
-   - See blockchain metadata (TX hash, block number, blockchain type)
+   - See blockchain metadata
    - Monitor verification history
 
 ### API Endpoints
@@ -259,7 +253,6 @@ Verify a certificate by file upload or certificate code.
   "status": "verified",
   "confidence": 95,
   "blockchainHash": "0x1234...",
-  "blockNumber": 18450298,
   "blockchainType": "ETHEREUM",
   "certificateDetails": {
     "studentName": "John Doe",
@@ -284,19 +277,39 @@ Create and register a new certificate (admin only).
 }
 ```
 
-**Response:**
-```json
-{
-  "id": "cert-123",
-  "code": "AVA-2024-001-XXXX",
-  "blockchainHash": "0x5678...",
-  "blockNumber": 18450300,
-  "blockchainType": "ETHEREUM"
-}
-```
-
 #### GET /api/certificates
 List all certificates with blockchain metadata (admin only).
+
+---
+
+## Blockchain Implementation Status
+
+### ✅ Simulation Mode (Default)
+- **Status:** Fully functional
+- **Setup Required:** None
+- **Use Case:** Development, testing, demonstrations
+- **Features:** 
+  - Auto-generates mock transaction hashes
+  - No external dependencies
+  - Instant verification
+
+### ✅ Ethereum Integration (Testnet)
+- **Status:** Working on Sepolia testnet
+- **Setup Required:** Alchemy API key + smart contract deployment
+- **Use Case:** Real blockchain verification on testnet
+- **Features:**
+  - Real smart contract calls
+  - Actual transaction hashes
+  - Block number tracking
+- **Limitations:** Testnet only, gas fees apply, not suitable for production without audit
+
+### ⏳ Hyperledger Fabric (Planned)
+- **Status:** Not yet implemented
+- **Current Behavior:** Falls back to simulation mode
+- **Why Not Included:** Requires Docker + complex network setup
+- **Future Timeline:** Contributions welcome
+
+**Current Default:** BLOCKCHAIN_TYPE=SIMULATION (recommended for development)
 
 ---
 
@@ -339,9 +352,6 @@ AVA-Secure-Document-Verification/
 │   ├── migrations/                  # Migration history
 │   └── dev.db                       # SQLite development database
 │
-├── blockchain-contracts/
-│   └── CertificateRegistry.sol       # Ethereum smart contract
-│
 ├── public/                           # Static assets
 ├── db/                               # Database storage
 ├── download/                         # Downloaded certificates
@@ -352,31 +362,10 @@ AVA-Secure-Document-Verification/
 ├── tsconfig.json                    # TypeScript configuration
 ├── package.json                     # Dependencies
 │
-├── BLOCKCHAIN_README.md              # Detailed blockchain guide
 ├── BLOCKCHAIN_SETUP.md              # Blockchain setup instructions
 ├── DEPLOYMENT.md                    # Production deployment
 └── README.md                        # This file
 ```
-
-### Key Directories Explained
-
-**src/lib/blockchain.service.ts**
-- Single unified interface for all blockchain operations
-- Routes to Ethereum (ethers.js), Fabric (fabric-network), or Simulation
-- Implements: `registerCertificate()`, `verifyCertificate()`, `getStatus()`
-
-**src/lib/verification.ts**
-- Core verification logic: SHA-256 hashing
-- Fuzzy matching against stored certificates
-- Confidence scoring algorithm
-
-**src/app/api/verify**
-- Entry point for verification requests
-- Orchestrates: file processing → hash → blockchain → response
-
-**prisma/schema.prisma**
-- Defines: User, Certificate, Institution models
-- Includes: blockchain metadata (txHash, blockNumber, blockchainType)
 
 ---
 
@@ -393,14 +382,13 @@ AVA-Secure-Document-Verification/
 ### Blockchain Security
 
 - ✅ **Private Keys**: Never hardcoded—stored in `.env` only
-- ✅ **Smart Contract Security**: OpenZeppelin patterns (Ownable, ReentrancyGuard)
-- ✅ **Transaction Validation**: Re-entrancy protection
-- ✅ **Immutable Records**: Blockchain provides tamper-proof storage
+- ✅ **Smart Contract Security**: Use OpenZeppelin patterns (if deployed)
+- ✅ **Immutable Records**: Blockchain provides tamper-proof storage (Ethereum)
 
 ### Rate Limiting
 
 - Custom in-memory rate limiter (src/lib/rate-limiter.ts)
-- Limits: 10 requests per IP per 15 minutes (configurable)
+- Limits: 5 login attempts per IP per 15 minutes
 - Prevents brute force attacks and abuse
 
 ### Best Practices
@@ -409,7 +397,7 @@ AVA-Secure-Document-Verification/
 - ✅ Use testnet (Sepolia) before mainnet
 - ✅ Rotate sensitive credentials regularly
 - ✅ Monitor blockchain gas usage
-- ✅ Audit smart contracts before deployment
+- ✅ Audit smart contracts before production
 
 ---
 
@@ -423,7 +411,7 @@ AVA-Secure-Document-Verification/
 - [ ] Multi-language support (i18n)
 
 ### Medium Term
-- [ ] IPFS integration for document storage (already scaffolded: @pinata/sdk)
+- [ ] IPFS integration for document storage
 - [ ] Advanced analytics dashboard
 - [ ] Integration with educational institutions' credential systems
 - [ ] Mobile app (React Native)
@@ -433,8 +421,8 @@ AVA-Secure-Document-Verification/
 - [ ] Decentralized identity (DID) integration
 - [ ] Zero-knowledge proofs for privacy-preserving verification
 - [ ] Machine learning for document forgery detection
-- [ ] Integration with standards (W3C Verifiable Credentials)
-- [ ] Cross-chain bridging (multiple blockchain ecosystems)
+- [ ] Hyperledger Fabric implementation
+- [ ] Multi-chain support (bridging)
 
 ---
 
@@ -464,11 +452,11 @@ See **DEPLOYMENT.md** for platform-specific guides, environment configuration, a
 
 ## Environment Variables
 
-### Core
+### Core (Required)
 ```
 NEXTAUTH_SECRET=your_random_secret_here
 NEXTAUTH_URL=http://localhost:3000
-DATABASE_URL=file:./db/dev.db
+DATABASE_URL=file:./prisma/dev.db
 ```
 
 ### Blockchain (Choose One)
@@ -482,14 +470,6 @@ ETHEREUM_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_KEY
 ETHEREUM_API_KEY=YOUR_ALCHEMY_KEY
 ETHEREUM_CONTRACT_ADDRESS=0xYourContractAddress
 ETHEREUM_PRIVATE_KEY=YourPrivateKey
-
-# Hyperledger Fabric
-BLOCKCHAIN_TYPE=FABRIC
-FABRIC_CCP_PATH=./connection-org1.json
-FABRIC_WALLET_PATH=./wallet
-FABRIC_IDENTITY=admin
-FABRIC_CHANNEL=mychannel
-FABRIC_CHAINCODE=basic
 ```
 
 See **.env.example** for complete configuration options.
@@ -498,44 +478,35 @@ See **.env.example** for complete configuration options.
 
 ## Testing
 
-### Test Scenarios
-
-**Scenario 1: Verification (New Document)**
+### Scenario 1: Verification (New Document)
 1. Upload a PDF
 2. Verify that a new certificate code is auto-generated
-3. Confirm blockchain registration (check TX hash)
+3. Confirm blockchain registration (check TX hash in simulation mode)
 
-**Scenario 2: Verification (Known Document)**
+### Scenario 2: Verification (Known Document)
 1. Upload same PDF again
 2. Verify that same certificate code is returned
-3. Confirm "not new" indicator
 
-**Scenario 3: Blockchain Switching**
-1. Register with ETHEREUM
-2. Switch `.env` to FABRIC
-3. Verify that different blockchain endpoints are called
-
-### Unit Tests
-Currently not included. Recommended test setup:
-- Jest for unit tests
-- React Testing Library for components
-- Prisma test database
+### Scenario 3: Blockchain Mode Switching
+1. Register with SIMULATION
+2. Access dashboard - see simulated transaction hashes
 
 ---
 
 ## Known Limitations & Assumptions
 
 ### Assumptions Made
-- **Local Development**: SQLite database used (production requires PostgreSQL/MySQL)
+- **Local Development**: SQLite database used (production requires PostgreSQL)
 - **File Storage**: Documents stored in `/download` directory (production requires S3/cloud storage)
 - **Blockchain**: Ethereum Sepolia testnet used for development (mainnet requires capital)
 - **Institution Data**: Pre-seeded via `prisma/seed.ts` (production requires institution management system)
 
 ### Limitations
-- No certificate revocation (immutable blockchain)
+- Ethereum integration tested on testnet only (not mainnet-ready without audit)
 - Simulation mode transactions are mocked (not on actual blockchain)
+- No certificate revocation (immutable blockchain limitation)
 - No batch processing (certificates registered one-at-a-time)
-- Private key management requires manual `.env` configuration
+- Hyperledger Fabric not yet implemented
 
 ---
 
@@ -559,11 +530,9 @@ This project is provided as-is for educational and portfolio purposes. No explic
 ### Blockchain Providers
 - **Ethereum**: [Alchemy](https://www.alchemy.com/) | [Infura](https://www.infura.io/)
 - **Smart Contracts**: [Remix IDE](https://remix.ethereum.org/) | [OpenZeppelin](https://docs.openzeppelin.com/)
-- **Hyperledger**: [Fabric Docs](https://hyperledger-fabric.readthedocs.io/)
 
 ### Web3 Libraries
 - [ethers.js Documentation](https://docs.ethers.org/)
-- [fabric-network SDK](https://fabric-sdk-node.github.io/)
 
 ### Development
 - [Next.js 16 Docs](https://nextjs.org/docs)
@@ -571,21 +540,27 @@ This project is provided as-is for educational and portfolio purposes. No explic
 - [NextAuth.js](https://next-auth.js.org/)
 
 ### Additional Documentation
-- **BLOCKCHAIN_README.md** - Detailed blockchain integration guide
-- **BLOCKCHAIN_SETUP.md** - Complete Ethereum & Fabric setup instructions
+- **BLOCKCHAIN_SETUP.md** - Ethereum smart contract deployment
 - **DEPLOYMENT.md** - Production deployment walkthrough
 
 ---
 
 ## Project Status
 
-✅ **Production-Ready**
-- Full blockchain integration (Ethereum, Fabric, Simulation)
-- Comprehensive security implementation
-- Type-safe codebase (TypeScript + Zod)
-- Complete documentation
+✅ **Ready for Development & Testing**
 
-**Last Updated:** April 2024
+- Core verification functionality: ✅ Working
+- Simulation blockchain: ✅ Working
+- Ethereum testnet support: ✅ Implemented (requires setup)
+- Authentication: ✅ Secure
+- Documentation: ✅ Honest about capabilities
+
+**Not Production-Ready For:**
+- Ethereum mainnet (needs audit)
+- Hyperledger Fabric (not implemented)
+- Large-scale deployments (no scaling configured)
+
+**Last Updated:** May 2026
 **Version:** 0.2.0
 
 ---
